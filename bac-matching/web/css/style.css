@@ -184,6 +184,36 @@ main {
     margin-bottom: 1rem;
 }
 
+.card-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+    padding: 0.8rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #ffd700;
+}
+
+.rating-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.stars {
+    font-size: 1.2rem;
+    color: #ffd700;
+    letter-spacing: 2px;
+}
+
+.rating-score {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #333;
+    margin-left: 0.3rem;
+}
+
 .card-tags {
     display: flex;
     flex-wrap: wrap;
