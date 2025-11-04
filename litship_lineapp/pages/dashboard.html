@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ライン管理ダッシュボード | Lit Ship</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../assets/css/dashboard-v2.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">🌊 Lit Ship</div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">メイン</div>
+                    <a class="nav-item active" onclick="showPage('overview')">
+                        <i class="fas fa-home"></i>
+                        <span>ダッシュボード</span>
+                    </a>
+                    <a class="nav-item" onclick="showPage('staff')">
+                        <i class="fas fa-users"></i>
+                        <span>スタッフ管理</span>
+                    </a>
+                    <a class="nav-item" onclick="showPage('projects')">
+                        <i class="fas fa-briefcase"></i>
+                        <span>案件管理</span>
+                    </a>
+                    <a class="nav-item" onclick="showPage('calendar')">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>カレンダー</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">機能</div>
+                    <a class="nav-item" onclick="location.href='availability-submit.html'">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>稼働日提出</span>
+                    </a>
+                    <a class="nav-item" onclick="location.href='performance.html'">
+                        <i class="fas fa-chart-line"></i>
+                        <span>実績管理</span>
+                    </a>
+                    <a class="nav-item" onclick="location.href='kpi-dashboard.html'">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>KPI管理</span>
+                    </a>
+                    <a class="nav-item" onclick="showPage('analytics')">
+                        <i class="fas fa-analytics"></i>
+                        <span>分析・レポート</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">その他</div>
+                    <a class="nav-item" onclick="alert('設定画面を開発中')">
+                        <i class="fas fa-cog"></i>
+                        <span>設定</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="main-header">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <div class="hamburger" onclick="toggleSidebar()">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <h1 class="page-title" id="pageTitle">ダッシュボード</h1>
+                </div>
+                
+                <div class="header-actions">
+                    <button class="btn-icon" title="通知">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <div class="user-profile">
+                        <div class="user-avatar">管</div>
+                        <span>管理者</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Overview Page -->
+                <div id="page-overview" class="page active">
+                    <!-- KPI Cards -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <i class="fas fa-yen-sign kpi-icon"></i>
+                            <div class="kpi-label">今月の売上予定</div>
+                            <div class="kpi-value" id="totalSales">¥0</div>
+                            <div class="kpi-trend">前月比 +15%</div>
+                        </div>
+                        <div class="kpi-card">
+                            <i class="fas fa-users kpi-icon"></i>
+                            <div class="kpi-label">登録スタッフ数</div>
+                            <div class="kpi-value" id="totalStaff">0人</div>
+                            <div class="kpi-trend">今月 +5名</div>
+                        </div>
+                        <div class="kpi-card">
+                            <i class="fas fa-briefcase kpi-icon"></i>
+                            <div class="kpi-label">案件数</div>
+                            <div class="kpi-value" id="projectCount">0件</div>
+                            <div class="kpi-trend">未配置 <span id="unassignedCount">0</span>件</div>
+                        </div>
+                        <div class="kpi-card">
+                            <i class="fas fa-check-circle kpi-icon"></i>
+                            <div class="kpi-label">配置完了率</div>
+                            <div class="kpi-value" id="assignmentRate">0%</div>
+                            <div class="kpi-trend">目標 100%</div>
+                        </div>
+                    </div>
+
+                    <!-- Alerts -->
+                    <div id="alertSection"></div>
+
+                    <!-- Quick Actions -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-bolt"></i>
+                                クイックアクション
+                            </h2>
+                        </div>
+                        <div class="quick-actions-grid">
+                            <div class="quick-action-card" onclick="runAutoAssignment()">
+                                <div class="quick-action-icon">
+                                    <i class="fas fa-robot"></i>
+                                </div>
+                                <div class="quick-action-label">自動配置</div>
+                            </div>
+                            <div class="quick-action-card" onclick="showPage('staff')">
+                                <div class="quick-action-icon">
+                                    <i class="fas fa-user-plus"></i>
+                                </div>
+                                <div class="quick-action-label">スタッフ検索</div>
+                            </div>
+                            <div class="quick-action-card" onclick="showAddProjectModal()">
+                                <div class="quick-action-icon">
+                                    <i class="fas fa-folder-plus"></i>
+                                </div>
+                                <div class="quick-action-label">案件追加</div>
+                            </div>
+                            <div class="quick-action-card" onclick="exportData()">
+                                <div class="quick-action-icon">
+                                    <i class="fas fa-download"></i>
+                                </div>
+                                <div class="quick-action-label">データ出力</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Today's Schedule -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-calendar-day"></i>
+                                今週の稼働予定
+                            </h2>
+                            <button class="btn btn-secondary" onclick="showPage('calendar')">
+                                カレンダーを見る
+                            </button>
+                        </div>
+                        <div id="scheduleList">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i>
+                                <div>稼働予定はカレンダーページで確認できます</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Staff Page -->
+                <div id="page-staff" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-users"></i>
+                                スタッフ管理 (100名)
+                            </h2>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                新規追加
+                            </button>
+                        </div>
+
+                        <!-- Search & Filter -->
+                        <div class="filter-section">
+                            <input type="text" id="staffSearch" placeholder="🔍 名前・スタッフコードで検索..." class="search-input" oninput="applyFilters()">
+                            <select id="skillFilter" class="filter-select" onchange="applyFilters()">
+                                <option value="">スキルで絞り込み</option>
+                                <option value="mnp-excellent">MNP◎</option>
+                                <option value="hikari-excellent">光◎</option>
+                                <option value="closer-excellent">クローザー適性◎</option>
+                                <option value="catcher-excellent">キャッチャー適性◎</option>
+                            </select>
+                            <select id="stationFilter" class="filter-select" onchange="applyFilters()">
+                                <option value="">駅で絞り込み</option>
+                                <option value="池袋">池袋</option>
+                                <option value="新宿">新宿</option>
+                                <option value="渋谷">渋谷</option>
+                                <option value="品川">品川</option>
+                                <option value="東京">東京</option>
+                                <option value="上野">上野</option>
+                                <option value="秋葉原">秋葉原</option>
+                            </select>
+                            <button class="btn btn-secondary" onclick="clearFilters()">
+                                <i class="fas fa-redo"></i> クリア
+                            </button>
+                        </div>
+
+                        <!-- Staff List -->
+                        <div class="staff-list" id="staffListExtended"></div>
+                        
+                        <!-- Pagination -->
+                        <div class="pagination" id="staffPagination"></div>
+                    </div>
+                </div>
+
+                <!-- Projects Page -->
+                <div id="page-projects" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-briefcase"></i>
+                                案件管理
+                            </h2>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-plus"></i>
+                                新規追加
+                            </button>
+                        </div>
+
+                        <!-- Search & Filter -->
+                        <div class="filter-section">
+                            <input type="text" id="projectSearch" placeholder="🔍 案件名で検索..." class="search-input" oninput="applyProjectFilters()">
+                            <select id="statusFilter" class="filter-select" onchange="applyProjectFilters()">
+                                <option value="">ステータスで絞り込み</option>
+                                <option value="配置済み">配置済み</option>
+                                <option value="未配置">未配置</option>
+                            </select>
+                            <select id="roleFilter" class="filter-select" onchange="applyProjectFilters()">
+                                <option value="">役割で絞り込み</option>
+                                <option value="クローザー">クローザー</option>
+                                <option value="キャッチャー">キャッチャー</option>
+                            </select>
+                            <button class="btn btn-secondary" onclick="clearProjectFilters()">
+                                <i class="fas fa-redo"></i> クリア
+                            </button>
+                        </div>
+
+                        <!-- Project List -->
+                        <div class="project-list" id="projectListExtended"></div>
+                    </div>
+                </div>
+
+                <!-- Calendar Page -->
+                <div id="page-calendar" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-calendar-alt"></i>
+                                稼働カレンダー
+                            </h2>
+                        </div>
+                        <div id="calendar"></div>
+                    </div>
+                </div>
+
+                <!-- Analytics Page -->
+                <div id="page-analytics" class="page">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <i class="fas fa-chart-pie"></i>
+                                売上・人員分析
+                            </h2>
+                        </div>
+                        
+                        <!-- Analytics Grid -->
+                        <div class="analytics-grid">
+                            <div class="analytics-card">
+                                <h3>スキル分布</h3>
+                                <canvas id="skillChart"></canvas>
+                            </div>
+                            <div class="analytics-card">
+                                <h3>適性分布</h3>
+                                <canvas id="suitabilityChart"></canvas>
+                            </div>
+                            <div class="analytics-card">
+                                <h3>通勤範囲分布</h3>
+                                <canvas id="commuteChart"></canvas>
+                            </div>
+                            <div class="analytics-card">
+                                <h3>月別売上予測</h3>
+                                <canvas id="salesChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- TOP Performers -->
+                        <div class="top-performers">
+                            <h3>🏆 TOP パフォーマンスタッフ</h3>
+                            <div id="topStaffList"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal: Assignment Result -->
+    <div id="assignmentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('assignmentModal')">&times;</span>
+            <h2>配置結果</h2>
+            <div id="assignmentResult"></div>
+        </div>
+    </div>
+
+    <!-- Modal: Add Project -->
+    <div id="addProjectModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('addProjectModal')">&times;</span>
+            <h2>📋 新規案件追加</h2>
+            <form id="addProjectForm" style="margin-top: 25px;">
+                <div class="form-group">
+                    <label>受注元 *</label>
+                    <input type="text" id="projectClient" placeholder="例：ヤマダ電機" required>
+                </div>
+
+                <div class="form-group">
+                    <label>案件名 *</label>
+                    <input type="text" id="projectName" placeholder="例：池袋店" required>
+                </div>
+
+                <div class="form-group">
+                    <label>単価（円/日）*</label>
+                    <input type="number" id="projectPrice" placeholder="例：15000" required min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>業務内容 *</label>
+                    <select id="projectContent" required>
+                        <option value="">選択してください</option>
+                        <option value="MNP獲得">MNP獲得</option>
+                        <option value="光回線案内">光回線案内</option>
+                        <option value="クレジットカード案内">クレジットカード案内</option>
+                        <option value="総合案内">総合案内</option>
+                        <option value="イベント運営">イベント運営</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>名乗り *</label>
+                    <input type="text" id="projectGreeting" placeholder="例：〇〇キャンペーンスタッフです" required>
+                </div>
+
+                <div class="form-group">
+                    <label>稼働場所 *</label>
+                    <input type="text" id="projectLocation" placeholder="例：東京都豊島区池袋1-1-1" required>
+                </div>
+
+                <div class="form-group">
+                    <label>稼働日 *</label>
+                    <input type="date" id="projectDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label>必要人数 *</label>
+                    <input type="number" id="projectPeople" placeholder="例：5" required min="1">
+                </div>
+
+                <div class="form-group">
+                    <label>必要な役割</label>
+                    <div style="display: flex; gap: 15px; margin-top: 10px;">
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="roleCloser" checked>
+                            <span>クローザー</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="roleCatcher" checked>
+                            <span>キャッチャー</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>備考</label>
+                    <textarea id="projectNotes" rows="3" placeholder="その他の情報や注意事項など..."></textarea>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 30px;">
+                    <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closeModal('addProjectModal')">
+                        キャンセル
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">
+                        <i class="fas fa-plus"></i> 案件を追加
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../assets/data/data-100.js"></script>
+    <script src="../assets/js/dashboard-v2.js"></script>
+    <script src="../assets/js/dashboard-v2-extended.js"></script>
+</body>
+</html>
+
