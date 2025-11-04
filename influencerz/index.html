@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>インフルエンサーZ - データ管理システム</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #DC143C;
+            --primary-hover: #B22222;
+            --secondary: #ff6b6b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --surface: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px 0 rgba(220, 20, 60, 0.1), 0 1px 2px 0 rgba(220, 20, 60, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(220, 20, 60, 0.15), 0 4px 6px -2px rgba(220, 20, 60, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 50%, #ffffff 100%);
+            background-attachment: fixed;
+            color: var(--text);
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        /* サイドバー */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, #DC143C 0%, #B22222 100%);
+            border-right: 3px solid rgba(220, 20, 60, 0.3);
+            padding: 24px;
+            overflow-y: auto;
+            z-index: 100;
+            box-shadow: 4px 0 20px rgba(220, 20, 60, 0.2);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-section {
+            margin-bottom: 32px;
+        }
+
+        .nav-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            padding: 0 12px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: all 0.3s;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.25);
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border-left: 4px solid white;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* メインコンテンツ */
+        .main-content {
+            margin-left: 260px;
+            padding: 32px;
+            max-width: 1600px;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, #DC143C, #ff6b6b);
+            border-radius: 2px;
+        }
+
+        .page-subtitle {
+            color: var(--text-light);
+            font-size: 16px;
+        }
+
+        /* 検索バー */
+        .search-bar {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 44px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--surface);
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        /* グリッドレイアウト */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+            border: 2px solid rgba(220, 20, 60, 0.2);
+            border-radius: 16px;
+            padding: 28px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #DC143C, #B22222);
+            transition: width 0.3s ease;
+        }
+
+        .card:hover::before {
+            width: 100%;
+            opacity: 0.05;
+        }
+
+        .card:hover {
+            box-shadow: 0 12px 30px rgba(220, 20, 60, 0.2);
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            border-width: 2px;
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 28px;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover .card-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 20px rgba(220, 20, 60, 0.3);
+        }
+
+        .card-icon.blue { 
+            background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%); 
+            color: var(--primary);
+            border: 2px solid rgba(220, 20, 60, 0.2);
+        }
+        .card-icon.purple { 
+            background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%); 
+            color: var(--primary);
+            border: 2px solid rgba(220, 20, 60, 0.2);
+        }
+        .card-icon.green { 
+            background: linear-gradient(135deg, #fee2e2 0%, #fef2f2 100%); 
+            color: var(--primary);
+            border: 2px solid rgba(220, 20, 60, 0.2);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--primary);
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-description {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 統計カード */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+            border: 2px solid rgba(220, 20, 60, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.2);
+            border-color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            background: linear-gradient(135deg, #DC143C, #B22222);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ボタン */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg);
+        }
+
+        /* スクロールバーのカスタマイズ */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #fff5f5;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #DC143C, #B22222);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #B22222, #8B0000);
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: rgba(220, 20, 60, 0.1);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 16px;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* モバイルメニュー */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 101;
+            background: linear-gradient(135deg, #DC143C 0%, #B22222 100%);
+            border: 2px solid rgba(220, 20, 60, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            cursor: pointer;
+            color: white;
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+        }
+
+        .mobile-menu-btn:hover {
+            box-shadow: 0 6px 20px rgba(220, 20, 60, 0.4);
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- サイドバー -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+            <div class="logo-text">インフルエンサーZ</div>
+        </div>
+
+        <nav>
+            <div class="nav-section">
+                <div class="nav-title">メイン</div>
+                <a href="#dashboard" class="nav-item active" onclick="showSection('dashboard')">
+                    <i class="fas fa-home"></i>
+                    <span>ダッシュボード</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">管理</div>
+                <a href="支社長データベース/index.html" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    <span>支社長データベース</span>
+                </a>
+                <a href="金融機関データベース/index.html" class="nav-item">
+                    <i class="fas fa-university"></i>
+                    <span>金融機関データベース</span>
+                </a>
+                <a href="提案資料作成システム/index.html" class="nav-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span>提案資料作成</span>
+                </a>
+                <a href="レポート生成システム/index.html" class="nav-item">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>レポート生成</span>
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- モバイルメニューボタン -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- メインコンテンツ -->
+    <div class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">ダッシュボード</h1>
+            <p class="page-subtitle">システム全体の概要とクイックアクセス</p>
+        </div>
+
+        <!-- 統計カード -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">登録クライアント数</div>
+                <div class="stat-value" id="statClients">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">登録支社長数</div>
+                <div class="stat-value" id="statManagers">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">提携金融機関数</div>
+                <div class="stat-value" id="statInstitutions">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">作成提案資料数</div>
+                <div class="stat-value" id="statProposals">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">生成レポート数</div>
+                <div class="stat-value" id="statReports">0</div>
+            </div>
+        </div>
+
+        <!-- クイックアクセス -->
+        <div class="page-header" style="margin-top: 40px;">
+            <h2 style="font-size: 20px; font-weight: 600; margin-bottom: 16px;">クイックアクセス</h2>
+        </div>
+
+        <div class="grid">
+            <a href="支社長データベース/index.html" class="card">
+                <div class="card-icon blue">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="card-title">支社長データベース</div>
+                <div class="card-description">
+                    47都道府県の支社長情報を管理。経歴、実績、連絡先などを一元管理できます。
+                </div>
+            </a>
+
+            <a href="金融機関データベース/index.html" class="card">
+                <div class="card-icon blue">
+                    <i class="fas fa-university"></i>
+                </div>
+                <div class="card-title">金融機関データベース</div>
+                <div class="card-description">
+                    提携金融機関と支店情報を一元管理。銀行、信用金庫、信用組合など全ての金融機関を登録できます。
+                </div>
+            </a>
+
+            <a href="提案資料作成システム/index.html" class="card">
+                <div class="card-icon purple">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="card-title">提案資料作成</div>
+                <div class="card-description">
+                    クライアント情報を入力するだけで、自動的に提案資料を生成します。
+                </div>
+            </a>
+
+            <a href="レポート生成システム/index.html" class="card">
+                <div class="card-icon green">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="card-title">レポート生成</div>
+                <div class="card-description">
+                    SNS情報を月次で管理し、クライアント向けの説明資料を自動生成します。
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // 統計情報を読み込む
+        function loadStats() {
+            // クライアント数
+            const clients = JSON.parse(localStorage.getItem('clients') || '[]');
+            document.getElementById('statClients').textContent = clients.length;
+
+            // 支社長数
+            const managers = JSON.parse(localStorage.getItem('managersData') || '{}');
+            const managerCount = Object.values(managers).filter(m => m.name && m.name.trim()).length;
+            document.getElementById('statManagers').textContent = managerCount;
+
+            // 金融機関数
+            const institutions = JSON.parse(localStorage.getItem('financialInstitutions') || '[]');
+            document.getElementById('statInstitutions').textContent = institutions.length;
+
+            // 提案資料数（仮）
+            document.getElementById('statProposals').textContent = '10';
+
+            // レポート数
+            const reports = JSON.parse(localStorage.getItem('snsData') || '[]');
+            document.getElementById('statReports').textContent = reports.length;
+        }
+
+        // サイドバー切り替え（モバイル）
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+
+        // 初期化
+        loadStats();
+    </script>
+</body>
+</html>

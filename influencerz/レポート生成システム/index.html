@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNSレポート生成システム</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #DC143C;
+            --primary-dark: #B22222;
+            --secondary: #ff6b6b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1f2937;
+            --dark-light: #374151;
+            --gray: #6b7280;
+            --gray-light: #e5e7eb;
+            --white: #ffffff;
+            --bg: #f9fafb;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 50%, #ffffff 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #DC143C 0%, #B22222 100%);
+            box-shadow: 0 4px 20px rgba(220, 20, 60, 0.3);
+            border-radius: 20px;
+            padding: 30px 40px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: movePattern 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes movePattern {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #DC143C 0%, #B22222 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 20, 60, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+            color: var(--primary);
+            border: 2px solid rgba(220, 20, 60, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%);
+            border-color: var(--primary);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+            border: 2px solid rgba(220, 20, 60, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .tab:hover {
+            background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #DC143C 0%, #B22222 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+            border-color: transparent;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+            border: 2px solid rgba(220, 20, 60, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(220, 20, 60, 0.15);
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 15px 40px rgba(220, 20, 60, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .card h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--primary);
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        .card h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #DC143C, #ff6b6b);
+            border-radius: 2px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--gray-light);
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
+        }
+
+        .client-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .client-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid rgba(220, 20, 60, 0.2);
+            border-left: 5px solid var(--primary);
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.1);
+        }
+
+        .client-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.2);
+            border-color: var(--primary);
+        }
+
+        .client-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .client-card p {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #DC143C 0%, #B22222 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: movePattern 15s linear infinite;
+            pointer-events: none;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.4);
+        }
+
+        .metric-card h3 {
+            font-size: 14px;
+            opacity: 0.95;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .metric-value {
+            font-size: 36px;
+            font-weight: 900;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .metric-change {
+            font-size: 14px;
+            margin-top: 10px;
+            opacity: 0.8;
+        }
+
+        .metric-change.positive {
+            color: #10b981;
+        }
+
+        .metric-change.negative {
+            color: #f59e0b;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .report-section {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid var(--gray-light);
+        }
+
+        .report-section:last-child {
+            border-bottom: none;
+        }
+
+        .report-section h3 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--primary);
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .report-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #DC143C, #ff6b6b);
+            border-radius: 2px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .table th,
+        .table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .table th {
+            background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%);
+            font-weight: 600;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .table tr:hover {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .badge-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(220, 20, 60, 0.3);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(220, 20, 60, 0.2);
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.2);
+            border-color: var(--primary);
+        }
+
+        .info-card h3 {
+            color: var(--primary);
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* スクロールバーのカスタマイズ */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #fff5f5;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #DC143C, #B22222);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #B22222, #8B0000);
+        }
+
+        .modal:not(.hidden) {
+            display: flex;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .client-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1><i class="fas fa-chart-bar"></i> SNSレポート生成システム</h1>
+            </div>
+            <div>
+                <a href="../index.html" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> ダッシュボードに戻る</a>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('clients')">クライアント管理</div>
+            <div class="tab" onclick="switchTab('data')">データ入力</div>
+            <div class="tab" onclick="switchTab('reports')">レポート閲覧</div>
+        </div>
+
+        <!-- クライアント管理タブ -->
+        <div id="clientsTab" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-building"></i> クライアント一覧</h2>
+                <div class="client-list" id="clientList">
+                    <!-- クライアントカードがここに動的に生成されます -->
+                </div>
+                <button class="btn btn-primary" onclick="showAddClientModal()" style="margin-top: 20px;">
+                    <i class="fas fa-plus"></i> 新規クライアントを追加
+                </button>
+            </div>
+        </div>
+
+        <!-- データ入力タブ -->
+        <div id="dataTab" class="tab-content hidden">
+            <div class="card">
+                <h2><i class="fas fa-database"></i> SNSデータ入力</h2>
+                <form id="dataForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>クライアント <span style="color: var(--danger);">*</span></label>
+                            <select id="dataClient" required>
+                                <option value="">選択してください</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>プラットフォーム <span style="color: var(--danger);">*</span></label>
+                            <select id="dataPlatform" required>
+                                <option value="Instagram">Instagram</option>
+                                <option value="Twitter">Twitter</option>
+                                <option value="TikTok">TikTok</option>
+                                <option value="Facebook">Facebook</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>レポート年月 <span style="color: var(--danger);">*</span></label>
+                            <input type="month" id="reportDate" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>フォロワー数</label>
+                            <input type="number" id="followers" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>フォロー中</label>
+                            <input type="number" id="following" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>投稿数</label>
+                            <input type="number" id="posts" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>エンゲージメント率 (%)</label>
+                            <input type="number" id="engagement_rate" step="0.01" min="0" max="100">
+                        </div>
+
+                        <div class="form-group">
+                            <label>リーチ</label>
+                            <input type="number" id="reach" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>インプレッション</label>
+                            <input type="number" id="impressions" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>平均いいね数</label>
+                            <input type="number" id="likes_avg" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>平均コメント数</label>
+                            <input type="number" id="comments_avg" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>ストーリーズ視聴数</label>
+                            <input type="number" id="stories_views" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>リール視聴数</label>
+                            <input type="number" id="reels_views" min="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>備考</label>
+                        <input type="text" id="dataNotes" placeholder="特記事項があれば記載">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> データを保存
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- レポート閲覧タブ -->
+        <div id="reportsTab" class="tab-content hidden">
+            <div class="card">
+                <h2><i class="fas fa-file-alt"></i> レポート生成・閲覧</h2>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>クライアント</label>
+                        <select id="reportClient">
+                            <option value="">選択してください</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>年</label>
+                        <select id="reportYear">
+                            <option value="2025">2025</option>
+                            <option value="2024">2024</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>月</label>
+                        <select id="reportMonth">
+                            <option value="1">1月</option>
+                            <option value="2">2月</option>
+                            <option value="3">3月</option>
+                            <option value="4">4月</option>
+                            <option value="5">5月</option>
+                            <option value="6">6月</option>
+                            <option value="7">7月</option>
+                            <option value="8">8月</option>
+                            <option value="9">9月</option>
+                            <option value="10">10月</option>
+                            <option value="11">11月</option>
+                            <option value="12">12月</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="generateReport()">
+                    <i class="fas fa-chart-line"></i> レポートを生成
+                </button>
+
+                <div id="reportDisplay" style="margin-top: 30px;"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- クライアント追加モーダル -->
+    <div id="clientModal" class="modal hidden">
+        <div class="card" style="max-width: 600px; margin: 50px auto;">
+            <h2>新規クライアントを追加</h2>
+            <form id="clientForm">
+                <div class="form-group">
+                    <label>クライアント名 <span style="color: var(--danger);">*</span></label>
+                    <input type="text" id="clientName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>企業URL</label>
+                    <input type="url" id="companyUrl">
+                </div>
+
+                <div class="form-group">
+                    <label>業種</label>
+                    <input type="text" id="industry">
+                </div>
+
+                <div class="form-group">
+                    <label>担当者名</label>
+                    <input type="text" id="contactPerson">
+                </div>
+
+                <div class="form-group">
+                    <label>メールアドレス</label>
+                    <input type="email" id="contactEmail">
+                </div>
+
+                <div class="form-group">
+                    <label>電話番号</label>
+                    <input type="tel" id="contactPhone">
+                </div>
+
+                <div class="form-group">
+                    <label>月額費用</label>
+                    <input type="number" id="monthlyFee" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>備考</label>
+                    <textarea id="clientNotes" style="width: 100%; padding: 12px; border: 2px solid var(--gray-light); border-radius: 10px; min-height: 80px;"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeClientModal()">キャンセル</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let clients = [];
+        let reports = [];
+
+        // 初期化
+        function init() {
+            loadClients();
+            loadReports();
+            updateClientSelects();
+        }
+
+        // タブ切り替え
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            
+            event.currentTarget.classList.add('active');
+            document.getElementById(tab + 'Tab').classList.remove('hidden');
+        }
+
+        // クライアント読み込み
+        function loadClients() {
+            const saved = localStorage.getItem('clients');
+            if (saved) {
+                clients = JSON.parse(saved);
+            }
+            displayClients();
+        }
+
+        // クライアント表示
+        function displayClients() {
+            const list = document.getElementById('clientList');
+            list.innerHTML = '';
+
+            if (clients.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 40px;">クライアントが登録されていません</p>';
+                return;
+            }
+
+            clients.forEach(client => {
+                const card = document.createElement('div');
+                card.className = 'client-card';
+                card.innerHTML = `
+                    <h3>${client.client_name}</h3>
+                    <p><i class="fas fa-industry"></i> ${client.industry || '未設定'}</p>
+                    <p><i class="fas fa-user"></i> ${client.contact_person || '未設定'}</p>
+                    <p><i class="fas fa-envelope"></i> ${client.contact_email || '未設定'}</p>
+                    <p><i class="fas fa-yen-sign"></i> ${client.monthly_fee ? client.monthly_fee.toLocaleString() + '円' : '未設定'}</p>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        // クライアント追加
+        document.getElementById('clientForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const client = {
+                id: Date.now(),
+                client_name: document.getElementById('clientName').value,
+                company_url: document.getElementById('companyUrl').value,
+                industry: document.getElementById('industry').value,
+                contact_person: document.getElementById('contactPerson').value,
+                contact_email: document.getElementById('contactEmail').value,
+                contact_phone: document.getElementById('contactPhone').value,
+                monthly_fee: parseFloat(document.getElementById('monthlyFee').value) || 0,
+                notes: document.getElementById('clientNotes').value,
+                created_at: new Date().toISOString()
+            };
+
+            clients.push(client);
+            localStorage.setItem('clients', JSON.stringify(clients));
+            displayClients();
+            updateClientSelects();
+            closeClientModal();
+            alert('クライアントを追加しました！');
+        });
+
+        // クライアント選択リスト更新
+        function updateClientSelects() {
+            const selects = ['dataClient', 'reportClient'];
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">選択してください</option>';
+                clients.forEach(client => {
+                    const option = document.createElement('option');
+                    option.value = client.id;
+                    option.textContent = client.client_name;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        // モーダル表示/非表示
+        function showAddClientModal() {
+            document.getElementById('clientModal').classList.remove('hidden');
+        }
+
+        function closeClientModal() {
+            document.getElementById('clientModal').classList.add('hidden');
+            document.getElementById('clientForm').reset();
+        }
+
+        // データ保存
+        document.getElementById('dataForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const data = {
+                client_id: parseInt(document.getElementById('dataClient').value),
+                platform: document.getElementById('dataPlatform').value,
+                report_date: document.getElementById('reportDate').value,
+                followers: parseInt(document.getElementById('followers').value) || 0,
+                following: parseInt(document.getElementById('following').value) || 0,
+                posts: parseInt(document.getElementById('posts').value) || 0,
+                engagement_rate: parseFloat(document.getElementById('engagement_rate').value) || 0,
+                reach: parseInt(document.getElementById('reach').value) || 0,
+                impressions: parseInt(document.getElementById('impressions').value) || 0,
+                likes_avg: parseInt(document.getElementById('likes_avg').value) || 0,
+                comments_avg: parseInt(document.getElementById('comments_avg').value) || 0,
+                stories_views: parseInt(document.getElementById('stories_views').value) || 0,
+                reels_views: parseInt(document.getElementById('reels_views').value) || 0,
+                notes: document.getElementById('dataNotes').value
+            };
+
+            const saved = localStorage.getItem('snsData');
+            const snsData = saved ? JSON.parse(saved) : [];
+            snsData.push(data);
+            localStorage.setItem('snsData', JSON.stringify(snsData));
+            
+            alert('データを保存しました！');
+            document.getElementById('dataForm').reset();
+        });
+
+        // レポート生成
+        function generateReport() {
+            const clientId = parseInt(document.getElementById('reportClient').value);
+            const year = parseInt(document.getElementById('reportYear').value);
+            const month = parseInt(document.getElementById('reportMonth').value);
+
+            if (!clientId) {
+                alert('クライアントを選択してください');
+                return;
+            }
+
+            const client = clients.find(c => c.id === clientId);
+            const saved = localStorage.getItem('snsData');
+            const snsData = saved ? JSON.parse(saved) : [];
+            
+            const reportDate = `${year}-${month.toString().padStart(2, '0')}`;
+            const data = snsData.find(d => 
+                d.client_id === clientId && 
+                d.report_date.startsWith(reportDate)
+            );
+
+            if (!data) {
+                alert('該当期間のデータが見つかりません');
+                return;
+            }
+
+            displayReport(client, data, year, month);
+        }
+
+        // レポート表示
+        function displayReport(client, data, year, month) {
+            const display = document.getElementById('reportDisplay');
+            
+            // 前月データを取得
+            const saved = localStorage.getItem('snsData');
+            const allData = saved ? JSON.parse(saved) : [];
+            const prevMonth = month === 1 ? 12 : month - 1;
+            const prevYear = month === 1 ? year - 1 : year;
+            const prevReportDate = `${prevYear}-${prevMonth.toString().padStart(2, '0')}`;
+            const prevData = allData.find(d => 
+                d.client_id === client.id && 
+                d.report_date.startsWith(prevReportDate)
+            );
+
+            // 計算
+            const followerGrowth = prevData ? data.followers - prevData.followers : 0;
+            const engagementChange = prevData ? data.engagement_rate - prevData.engagement_rate : 0;
+            const reachChange = prevData ? data.reach - prevData.reach : 0;
+            const avgEngagement = data.followers > 0 ? ((data.likes_avg + data.comments_avg) / data.followers * 100) : 0;
+
+            let html = `
+                <div class="report-section">
+                    <h3>${client.client_name} SNS運用レポート</h3>
+                    <p style="color: var(--gray); margin-bottom: 20px;">${year}年${month}月</p>
+                    <p style="color: var(--gray); font-size: 14px;">プラットフォーム: ${data.platform}</p>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h3>フォロワー数</h3>
+                        <div class="metric-value">${data.followers.toLocaleString()}</div>
+                        ${prevData ? `<div class="metric-change ${followerGrowth >= 0 ? 'positive' : 'negative'}">
+                            ${followerGrowth >= 0 ? '↑' : '↓'} ${Math.abs(followerGrowth).toLocaleString()}人 (前月比)
+                        </div>` : ''}
+                    </div>
+                    <div class="metric-card">
+                        <h3>エンゲージメント率</h3>
+                        <div class="metric-value">${data.engagement_rate.toFixed(2)}%</div>
+                        ${prevData ? `<div class="metric-change ${engagementChange >= 0 ? 'positive' : 'negative'}">
+                            ${engagementChange >= 0 ? '↑' : '↓'} ${Math.abs(engagementChange).toFixed(2)}% (前月比)
+                        </div>` : ''}
+                    </div>
+                    <div class="metric-card">
+                        <h3>リーチ</h3>
+                        <div class="metric-value">${data.reach.toLocaleString()}</div>
+                        ${prevData ? `<div class="metric-change ${reachChange >= 0 ? 'positive' : 'negative'}">
+                            ${reachChange >= 0 ? '↑' : '↓'} ${Math.abs(reachChange).toLocaleString()}人 (前月比)
+                        </div>` : ''}
+                    </div>
+                    <div class="metric-card">
+                        <h3>投稿数</h3>
+                        <div class="metric-value">${data.posts.toLocaleString()}</div>
+                        <div class="metric-change" style="margin-top: 10px; opacity: 0.8;">
+                            月平均: ${(data.posts / 30).toFixed(1)}件/日
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-section">
+                    <h3>エンゲージメント分析</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+                        <div class="info-card">
+                            <h3>平均いいね数</h3>
+                            <p style="font-size: 24px; font-weight: 700;">${data.likes_avg.toLocaleString()}</p>
+                            <p style="font-size: 12px; color: var(--gray); margin-top: 5px;">投稿あたり</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>平均コメント数</h3>
+                            <p style="font-size: 24px; font-weight: 700;">${data.comments_avg.toLocaleString()}</p>
+                            <p style="font-size: 12px; color: var(--gray); margin-top: 5px;">投稿あたり</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>総エンゲージメント</h3>
+                            <p style="font-size: 24px; font-weight: 700;">${(data.likes_avg + data.comments_avg).toLocaleString()}</p>
+                            <p style="font-size: 12px; color: var(--gray); margin-top: 5px;">投稿あたり</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>実効エンゲージメント率</h3>
+                            <p style="font-size: 24px; font-weight: 700;">${avgEngagement.toFixed(2)}%</p>
+                            <p style="font-size: 12px; color: var(--gray); margin-top: 5px;">フォロワーあたり</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-section">
+                    <h3>ストーリーズ・リール分析</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+                        <div class="info-card">
+                            <h3>ストーリーズ視聴数</h3>
+                            <p style="font-size: 24px; font-weight: 700;">${data.stories_views.toLocaleString()}</p>
+                            <p style="font-size: 12px; color: var(--gray); margin-top: 5px;">総視聴数</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>リール視聴数</h3>
+                            <p style="font-size: 24px; font-weight: 700;">${data.reels_views.toLocaleString()}</p>
+                            <p style="font-size: 12px; color: var(--gray); margin-top: 5px;">総視聴数</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>コンテンツ視聴率</h3>
+                            <p style="font-size: 24px; font-weight: 700;">${data.followers > 0 ? ((data.stories_views + data.reels_views) / data.followers * 100).toFixed(1) : 0}%</p>
+                            <p style="font-size: 12px; color: var(--gray); margin-top: 5px;">フォロワーあたり</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-section">
+                    <h3>詳細データ</h3>
+                    <table class="table">
+                        <tr>
+                            <th>指標</th>
+                            <th>値</th>
+                            ${prevData ? '<th>前月比</th>' : ''}
+                        </tr>
+                        <tr>
+                            <td>フォロワー数</td>
+                            <td>${data.followers.toLocaleString()}人</td>
+                            ${prevData ? `<td>${followerGrowth >= 0 ? '+' : ''}${followerGrowth.toLocaleString()}人</td>` : ''}
+                        </tr>
+                        <tr>
+                            <td>フォロー中</td>
+                            <td>${data.following.toLocaleString()}人</td>
+                            ${prevData ? `<td>${(data.following - prevData.following) >= 0 ? '+' : ''}${(data.following - prevData.following).toLocaleString()}人</td>` : ''}
+                        </tr>
+                        <tr>
+                            <td>投稿数</td>
+                            <td>${data.posts.toLocaleString()}件</td>
+                            ${prevData ? `<td>${(data.posts - prevData.posts) >= 0 ? '+' : ''}${(data.posts - prevData.posts).toLocaleString()}件</td>` : ''}
+                        </tr>
+                        <tr>
+                            <td>エンゲージメント率</td>
+                            <td>${data.engagement_rate.toFixed(2)}%</td>
+                            ${prevData ? `<td>${engagementChange >= 0 ? '+' : ''}${engagementChange.toFixed(2)}%</td>` : ''}
+                        </tr>
+                        <tr>
+                            <td>リーチ</td>
+                            <td>${data.reach.toLocaleString()}人</td>
+                            ${prevData ? `<td>${reachChange >= 0 ? '+' : ''}${reachChange.toLocaleString()}人</td>` : ''}
+                        </tr>
+                        <tr>
+                            <td>インプレッション</td>
+                            <td>${data.impressions.toLocaleString()}回</td>
+                            ${prevData ? `<td>${(data.impressions - prevData.impressions) >= 0 ? '+' : ''}${(data.impressions - prevData.impressions).toLocaleString()}回</td>` : ''}
+                        </tr>
+                        <tr>
+                            <td>平均いいね数</td>
+                            <td>${data.likes_avg.toLocaleString()}件</td>
+                            ${prevData ? `<td>${(data.likes_avg - prevData.likes_avg) >= 0 ? '+' : ''}${(data.likes_avg - prevData.likes_avg).toLocaleString()}件</td>` : ''}
+                        </tr>
+                        <tr>
+                            <td>平均コメント数</td>
+                            <td>${data.comments_avg.toLocaleString()}件</td>
+                            ${prevData ? `<td>${(data.comments_avg - prevData.comments_avg) >= 0 ? '+' : ''}${(data.comments_avg - prevData.comments_avg).toLocaleString()}件</td>` : ''}
+                        </tr>
+                        <tr>
+                            <td>ストーリーズ視聴数</td>
+                            <td>${data.stories_views.toLocaleString()}回</td>
+                            ${prevData ? `<td>${(data.stories_views - prevData.stories_views) >= 0 ? '+' : ''}${(data.stories_views - prevData.stories_views).toLocaleString()}回</td>` : ''}
+                        </tr>
+                        <tr>
+                            <td>リール視聴数</td>
+                            <td>${data.reels_views.toLocaleString()}回</td>
+                            ${prevData ? `<td>${(data.reels_views - prevData.reels_views) >= 0 ? '+' : ''}${(data.reels_views - prevData.reels_views).toLocaleString()}回</td>` : ''}
+                        </tr>
+                    </table>
+                </div>
+
+                ${data.notes ? `
+                <div class="report-section">
+                    <h3>備考</h3>
+                    <p>${data.notes}</p>
+                </div>
+                ` : ''}
+            `;
+
+            display.innerHTML = html;
+
+            // グラフを描画（前月データがある場合）
+            if (prevData) {
+                drawComparisonChart(data, prevData);
+            }
+        }
+
+        // 比較グラフを描画
+        function drawComparisonChart(currentData, prevData) {
+            const display = document.getElementById('reportDisplay');
+            const chartSection = document.createElement('div');
+            chartSection.className = 'report-section';
+            chartSection.innerHTML = '<h3>前月比較グラフ</h3><div class="chart-container"><canvas id="comparisonChart"></canvas></div>';
+            display.appendChild(chartSection);
+
+            setTimeout(() => {
+                const ctx = document.getElementById('comparisonChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['フォロワー', 'エンゲージメント率', 'リーチ', 'いいね数', 'コメント数'],
+                        datasets: [{
+                            label: '今月',
+                            data: [
+                                currentData.followers / 1000,
+                                currentData.engagement_rate * 10,
+                                currentData.reach / 1000,
+                                currentData.likes_avg,
+                                currentData.comments_avg
+                            ],
+                            backgroundColor: 'rgba(220, 20, 60, 0.8)',
+                        }, {
+                            label: '前月',
+                            data: [
+                                prevData.followers / 1000,
+                                prevData.engagement_rate * 10,
+                                prevData.reach / 1000,
+                                prevData.likes_avg,
+                                prevData.comments_avg
+                            ],
+                            backgroundColor: 'rgba(178, 34, 34, 0.8)',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }, 100);
+        }
+
+        function loadReports() {
+            // レポート読み込み処理
+        }
+
+        // 初期化実行
+        init();
+    </script>
+</body>
+</html>
+

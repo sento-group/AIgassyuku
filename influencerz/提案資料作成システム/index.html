@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>提案資料作成システム</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 50%, #ffffff 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+            scroll-behavior: smooth;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(220, 20, 60, 0.2);
+            overflow: hidden;
+            border: 2px solid rgba(220, 20, 60, 0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #DC143C 0%, #B22222 100%);
+            color: white;
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(220, 20, 60, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: movePattern 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes movePattern {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            min-height: calc(100vh - 200px);
+        }
+
+        .form-panel {
+            background: #f8f9fa;
+            padding: 30px;
+            border-right: 1px solid #e2e8f0;
+            overflow-y: auto;
+        }
+
+        .form-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #DC143C;
+            box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #DC143C 0%, #B22222 100%);
+            color: white;
+            width: 100%;
+            padding: 14px;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 20, 60, 0.3);
+        }
+
+        .preview-panel {
+            padding: 40px;
+            overflow-y: auto;
+            background: white;
+        }
+
+        .preview-document {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 4px 20px rgba(220, 20, 60, 0.15);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(220, 20, 60, 0.1);
+        }
+
+        .document-header {
+            background: linear-gradient(135deg, #DC143C 0%, #B22222 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .document-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: movePattern 20s linear infinite;
+            pointer-events: none;
+        }
+
+        .document-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .document-header p {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .document-content {
+            padding: 50px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+            page-break-inside: avoid;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #DC143C;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #DC143C;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            font-size: 28px;
+        }
+
+        .section-content {
+            line-height: 1.8;
+            color: #2c3e50;
+        }
+
+        .section-content p {
+            margin-bottom: 12px;
+        }
+
+        .section-content strong {
+            color: #DC143C;
+            font-weight: 600;
+        }
+
+        .section-content ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .section-content ul li {
+            margin-bottom: 8px;
+            padding-left: 8px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #DC143C;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .info-box:hover {
+            transform: translateX(5px);
+            box-shadow: 0 6px 20px rgba(220, 20, 60, 0.15);
+        }
+
+        .info-box h4 {
+            color: #DC143C;
+            font-weight: 700;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .info-box p {
+            margin-bottom: 8px;
+        }
+
+        .info-box ul {
+            margin-top: 12px;
+        }
+
+        .empty-preview {
+            text-align: center;
+            padding: 100px 20px;
+            color: #64748b;
+        }
+
+        .empty-preview i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-preview p {
+            font-size: 18px;
+        }
+
+        .download-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        .btn-download {
+            background: linear-gradient(135deg, #DC143C 0%, #B22222 100%);
+            color: white;
+            flex: 1;
+            padding: 14px;
+            font-weight: 600;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 20, 60, 0.3);
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            .form-panel {
+                border-right: none;
+                border-bottom: 1px solid #e2e8f0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-file-alt"></i> 提案資料作成システム</h1>
+            <a href="../index.html" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> ダッシュボード
+            </a>
+        </div>
+
+        <div class="main-content">
+            <!-- 入力フォーム -->
+            <div class="form-panel">
+                <h2 class="form-title">クライアント情報</h2>
+                <form id="proposalForm">
+                    <div class="form-group">
+                        <label class="form-label">クライアント名 <span style="color: #ef4444;">*</span></label>
+                        <input type="text" class="form-input" id="clientName" required placeholder="例: キャプテンズグループ">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">企業URL</label>
+                        <input type="url" class="form-input" id="clientUrl" placeholder="https://example.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Instagram URL</label>
+                        <input type="url" class="form-input" id="instagramUrl" placeholder="https://www.instagram.com/account/">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">備考・特記事項</label>
+                        <textarea class="form-textarea" id="notes" placeholder="現在の運用状況、要望などを記載"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-magic"></i> 提案資料を生成
+                    </button>
+                </form>
+
+                <div class="download-actions" id="downloadActions" style="display: none;">
+                    <button class="btn btn-download" onclick="downloadPDF()">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
+                    <button class="btn btn-download" onclick="downloadJSON()">
+                        <i class="fas fa-download"></i> JSON
+                    </button>
+                </div>
+            </div>
+
+            <!-- プレビュー -->
+            <div class="preview-panel">
+                <div id="previewArea">
+                    <div class="empty-preview">
+                        <i class="fas fa-file-alt"></i>
+                        <p>クライアント情報を入力して<br>「提案資料を生成」をクリックしてください</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        let currentProposal = null;
+
+        document.getElementById('proposalForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            generateProposal();
+        });
+
+        function generateProposal() {
+            const clientName = document.getElementById('clientName').value;
+            const clientUrl = document.getElementById('clientUrl').value;
+            const instagramUrl = document.getElementById('instagramUrl').value;
+            const notes = document.getElementById('notes').value;
+
+            const proposal = {
+                client_name: clientName,
+                created_at: new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' }),
+                sections: {
+                    "1_アカウント方向性": generateAccountDirection(clientName, notes, instagramUrl),
+                    "2_投稿内容": generateContentPlan(clientName),
+                    "3_参考アカウント": generateReferenceAccounts(clientName),
+                    "4_運用プラン": generateOperationPlan(),
+                    "5_費用": {
+                        "基本料金": "270,000円（税抜）",
+                        "備考": "SNS運用サービス"
+                    }
+                },
+                client_info: {
+                    client_name: clientName,
+                    client_url: clientUrl,
+                    instagram_url: instagramUrl,
+                    notes: notes
+                }
+            };
+
+            currentProposal = proposal;
+            displayPreview(proposal);
+            document.getElementById('downloadActions').style.display = 'flex';
+        }
+
+        function generateAccountDirection(clientName, notes, instagramUrl) {
+            let industry = "その他";
+            if (clientName.includes("ホテル") || clientName.includes("リゾート") || clientName.includes("観光") || clientName.includes("キャプテンズ")) {
+                industry = "観光";
+            } else if (clientName.includes("飲食") || clientName.includes("レストラン") || clientName.includes("カフェ")) {
+                industry = "飲食";
+            } else if (clientName.includes("地方") || clientName.includes("地域") || clientName.includes("村") || clientName.includes("町")) {
+                industry = "地方創生";
+            }
+
+            const directions = {
+                "観光": {
+                    "コンセプト": `${clientName}のホテル・リゾートの魅力を伝え、観光客への訴求を強化`,
+                    "ターゲット": "リゾートホテルを検討している20-50代の男女、特に家族連れやカップル",
+                    "トーン": "親しみやすく、リゾートの魅力と楽しさを伝える"
+                },
+                "飲食": {
+                    "コンセプト": `${clientName}の美味しさと雰囲気を伝える`,
+                    "ターゲット": "グルメに興味のある20-40代",
+                    "トーン": "食欲をそそる、温かみのある"
+                },
+                "地方創生": {
+                    "コンセプト": `${clientName}の地域資源と魅力を発信`,
+                    "ターゲット": "移住・二拠点生活に関心のある30-50代",
+                    "トーン": "真摯で、地域への愛情が伝わる"
+                },
+                "その他": {
+                    "コンセプト": `${clientName}の価値を伝える`,
+                    "ターゲット": "一般的なSNSユーザー",
+                    "トーン": "親しみやすく、信頼感のある"
+                }
+            };
+
+            const direction = directions[industry];
+            if (notes) {
+                direction["現在の状況"] = notes;
+            }
+            if (instagramUrl && instagramUrl.includes("instagram.com")) {
+                const accountMatch = instagramUrl.match(/instagram\.com\/([^\/\?]+)/);
+                if (accountMatch && !direction["現在の状況"]) {
+                    direction["現在の状況"] = `個人アカウント（@${accountMatch[1]}）で発信中。法人アカウントへの移行も検討可能。`;
+                } else if (accountMatch && direction["現在の状況"]) {
+                    direction["現在の状況"] += ` 個人アカウント（@${accountMatch[1]}）で発信中。`;
+                }
+            }
+            if (industry === "観光") {
+                direction["推奨戦略"] = "個人アカウントの良さを活かしつつ、法人としての信頼性も高めるハイブリッド運用";
+            }
+
+            return direction;
+        }
+
+        function generateContentPlan(clientName) {
+            let postTypes = [
+                "商品・サービス紹介",
+                "スタッフ紹介",
+                "お客様の声",
+                "地域情報",
+                "季節の話題",
+                "ストーリーズ（日常の様子）"
+            ];
+
+            if (clientName.includes("ホテル") || clientName.includes("リゾート") || clientName.includes("観光") || clientName.includes("キャプテンズ")) {
+                postTypes = [
+                    "ホテル・リゾートの施設紹介",
+                    "客室・アメニティの紹介",
+                    "レストラン・食事の紹介",
+                    "アクティビティ・体験の紹介",
+                    "スタッフ紹介",
+                    "お客様の声・レビュー",
+                    "季節のイベント情報",
+                    "ストーリーズ（日常の様子、リアルタイム情報）"
+                ];
+            } else if (clientName.includes("飲食") || clientName.includes("レストラン") || clientName.includes("カフェ")) {
+                postTypes = [
+                    "メニュー・料理の紹介",
+                    "レストランの雰囲気・内装",
+                    "スタッフ紹介",
+                    "お客様の声・レビュー",
+                    "季節限定メニュー",
+                    "ストーリーズ（日常の様子、リアルタイム情報）"
+                ];
+            } else if (clientName.includes("地方") || clientName.includes("地域") || clientName.includes("村") || clientName.includes("町")) {
+                postTypes = [
+                    "地域の魅力・名所紹介",
+                    "地域イベント情報",
+                    "地域特産品の紹介",
+                    "地域の人々の紹介",
+                    "移住・二拠点生活の情報",
+                    "季節の話題",
+                    "ストーリーズ（日常の様子）"
+                ];
+            }
+
+            return {
+                "投稿頻度": "週3-5回",
+                "投稿タイプ": postTypes,
+                "ハッシュタグ戦略": "業種・地域・キーワードを組み合わせたハッシュタグを使用",
+                "エンゲージメント向上": "質問形式の投稿、投票機能、リール動画の活用"
+            };
+        }
+
+        function generateReferenceAccounts(clientName) {
+            let accounts = [
+                "同業他社の成功事例",
+                "類似サービス提供企業",
+                "地域密着型のアカウント"
+            ];
+
+            if (clientName.includes("ホテル") || clientName.includes("リゾート") || clientName.includes("観光") || clientName.includes("キャプテンズ")) {
+                accounts = [
+                    "同業ホテル・リゾートの成功事例",
+                    "観光地の公式アカウント",
+                    "地域密着型のホテルアカウント"
+                ];
+            }
+
+            return {
+                "業種別参考アカウント": accounts,
+                "参考ポイント": [
+                    "投稿頻度とタイミング",
+                    "コンテンツの構成",
+                    "エンゲージメント率",
+                    "ストーリーズの活用方法"
+                ]
+            };
+        }
+
+        function generateOperationPlan() {
+            return {
+                "運用期間": "3ヶ月間（延長可能）",
+                "サービス内容": [
+                    "アカウント運用戦略の策定",
+                    "投稿コンテンツの作成",
+                    "投稿スケジュール管理",
+                    "エンゲージメント分析",
+                    "月次レポート提供"
+                ],
+                "成果指標": [
+                    "フォロワー数増加",
+                    "エンゲージメント率向上",
+                    "リーチ数拡大",
+                    "コンバージョン率改善"
+                ]
+            };
+        }
+
+        function displayPreview(proposal) {
+            const preview = document.getElementById('previewArea');
+            const sections = proposal.sections;
+
+            let html = `
+                <div class="preview-document">
+                    <div class="document-header">
+                        <h2>SNP_アカウント企画提案資料</h2>
+                        <p>${proposal.client_name} 様向け</p>
+                        <p style="margin-top: 10px; font-size: 14px; opacity: 0.8;">作成日: ${proposal.created_at}</p>
+                    </div>
+                    <div class="document-content">
+                        <div class="section">
+                            <div class="section-title">
+                                <i class="fas fa-bullseye"></i>
+                                1. アカウント方向性
+                            </div>
+                            <div class="section-content">
+                                <div class="info-box">
+                                    <h4>コンセプト</h4>
+                                    <p>${sections["1_アカウント方向性"]["コンセプト"]}</p>
+                                </div>
+                                <div class="info-box">
+                                    <h4>ターゲット</h4>
+                                    <p>${sections["1_アカウント方向性"]["ターゲット"]}</p>
+                                </div>
+                                <div class="info-box">
+                                    <h4>トーン</h4>
+                                    <p>${sections["1_アカウント方向性"]["トーン"]}</p>
+                                </div>
+                                ${sections["1_アカウント方向性"]["現在の状況"] ? `
+                                <div class="info-box">
+                                    <h4>現在の状況</h4>
+                                    <p>${sections["1_アカウント方向性"]["現在の状況"]}</p>
+                                </div>
+                                ` : ''}
+                                ${sections["1_アカウント方向性"]["推奨戦略"] ? `
+                                <div class="info-box">
+                                    <h4>推奨戦略</h4>
+                                    <p>${sections["1_アカウント方向性"]["推奨戦略"]}</p>
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">
+                                <i class="fas fa-edit"></i>
+                                2. 投稿内容
+                            </div>
+                            <div class="section-content">
+                                <p><strong>投稿頻度:</strong> ${sections["2_投稿内容"]["投稿頻度"]}</p>
+                                <div class="info-box">
+                                    <h4>投稿タイプ</h4>
+                                    <ul>
+                                        ${sections["2_投稿内容"]["投稿タイプ"].map(type => `<li>${type}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <p><strong>ハッシュタグ戦略:</strong> ${sections["2_投稿内容"]["ハッシュタグ戦略"]}</p>
+                                <p><strong>エンゲージメント向上:</strong> ${sections["2_投稿内容"]["エンゲージメント向上"]}</p>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">
+                                <i class="fas fa-users"></i>
+                                3. 参考アカウント
+                            </div>
+                            <div class="section-content">
+                                <div class="info-box">
+                                    <h4>業種別参考アカウント</h4>
+                                    <ul>
+                                        ${sections["3_参考アカウント"]["業種別参考アカウント"].map(acc => `<li>${acc}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <div class="info-box">
+                                    <h4>参考ポイント</h4>
+                                    <ul>
+                                        ${sections["3_参考アカウント"]["参考ポイント"].map(point => `<li>${point}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">
+                                <i class="fas fa-calendar-alt"></i>
+                                4. 運用プラン
+                            </div>
+                            <div class="section-content">
+                                <p><strong>運用期間:</strong> ${sections["4_運用プラン"]["運用期間"]}</p>
+                                <div class="info-box">
+                                    <h4>サービス内容</h4>
+                                    <ul>
+                                        ${sections["4_運用プラン"]["サービス内容"].map(service => `<li>${service}</li>`).join('')}
+                                    </ul>
+                                </div>
+                                <div class="info-box">
+                                    <h4>成果指標</h4>
+                                    <ul>
+                                        ${sections["4_運用プラン"]["成果指標"].map(metric => `<li>${metric}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-title">
+                                <i class="fas fa-yen-sign"></i>
+                                5. 費用
+                            </div>
+                            <div class="section-content">
+                                <div class="info-box">
+                                    <h4>基本料金</h4>
+                                    <p style="font-size: 24px; font-weight: 700; color: #DC143C;">${sections["5_費用"]["基本料金"]}</p>
+                                    <p><strong>備考:</strong> ${sections["5_費用"]["備考"]}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${proposal.client_info.client_url || proposal.client_info.instagram_url || proposal.client_info.notes ? `
+                        <div class="section">
+                            <div class="section-title">
+                                <i class="fas fa-info-circle"></i>
+                                クライアント情報
+                            </div>
+                            <div class="section-content">
+                                ${proposal.client_info.client_url ? `<p><strong>企業URL:</strong> ${proposal.client_info.client_url}</p>` : ''}
+                                ${proposal.client_info.instagram_url ? `<p><strong>Instagram:</strong> ${proposal.client_info.instagram_url}</p>` : ''}
+                                ${proposal.client_info.notes ? `<p><strong>備考:</strong> ${proposal.client_info.notes}</p>` : ''}
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+
+            preview.innerHTML = html;
+        }
+
+        function downloadJSON() {
+            const data = JSON.stringify(currentProposal, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `【${currentProposal.client_name}】提案資料_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+        }
+
+        function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const sections = currentProposal.sections;
+            let yPos = 20;
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 20;
+            const maxWidth = pageWidth - (margin * 2);
+
+            // ヘッダー
+            doc.setFillColor(220, 20, 60);
+            doc.rect(0, 0, pageWidth, 40, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(24);
+            doc.setFont(undefined, 'bold');
+            doc.text('SNP_アカウント企画提案資料', pageWidth / 2, 15, { align: 'center' });
+            doc.setFontSize(14);
+            doc.text(`${currentProposal.client_name} 様向け`, pageWidth / 2, 25, { align: 'center' });
+            doc.setFontSize(10);
+            doc.text(`作成日: ${currentProposal.created_at}`, pageWidth / 2, 33, { align: 'center' });
+
+            yPos = 50;
+            doc.setTextColor(0, 0, 0);
+
+            // セクション1: アカウント方向性
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(220, 20, 60);
+            doc.text('1. アカウント方向性', margin, yPos);
+            yPos += 10;
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(0, 0, 0);
+
+            doc.setFont(undefined, 'bold');
+            doc.text('コンセプト:', margin, yPos);
+            yPos += 7;
+            doc.setFont(undefined, 'normal');
+            doc.text(sections["1_アカウント方向性"]["コンセプト"], margin, yPos, { maxWidth });
+            yPos += 10;
+
+            doc.setFont(undefined, 'bold');
+            doc.text('ターゲット:', margin, yPos);
+            yPos += 7;
+            doc.setFont(undefined, 'normal');
+            doc.text(sections["1_アカウント方向性"]["ターゲット"], margin, yPos, { maxWidth });
+            yPos += 10;
+
+            doc.setFont(undefined, 'bold');
+            doc.text('トーン:', margin, yPos);
+            yPos += 7;
+            doc.setFont(undefined, 'normal');
+            doc.text(sections["1_アカウント方向性"]["トーン"], margin, yPos, { maxWidth });
+            yPos += 15;
+
+            // セクション2: 投稿内容
+            if (yPos > 250) {
+                doc.addPage();
+                yPos = 20;
+            }
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(220, 20, 60);
+            doc.text('2. 投稿内容', margin, yPos);
+            yPos += 10;
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(0, 0, 0);
+
+            doc.setFont(undefined, 'bold');
+            doc.text('投稿頻度:', margin, yPos);
+            yPos += 7;
+            doc.setFont(undefined, 'normal');
+            doc.text(sections["2_投稿内容"]["投稿頻度"], margin, yPos, { maxWidth });
+            yPos += 10;
+
+            doc.setFont(undefined, 'bold');
+            doc.text('投稿タイプ:', margin, yPos);
+            yPos += 7;
+            sections["2_投稿内容"]["投稿タイプ"].forEach(type => {
+                doc.text(`・${type}`, margin + 5, yPos, { maxWidth: maxWidth - 5 });
+                yPos += 6;
+            });
+            yPos += 5;
+
+            doc.setFont(undefined, 'bold');
+            doc.text('ハッシュタグ戦略:', margin, yPos);
+            yPos += 7;
+            doc.setFont(undefined, 'normal');
+            doc.text(sections["2_投稿内容"]["ハッシュタグ戦略"], margin, yPos, { maxWidth });
+            yPos += 10;
+
+            doc.setFont(undefined, 'bold');
+            doc.text('エンゲージメント向上:', margin, yPos);
+            yPos += 7;
+            doc.setFont(undefined, 'normal');
+            doc.text(sections["2_投稿内容"]["エンゲージメント向上"], margin, yPos, { maxWidth });
+            yPos += 15;
+
+            // セクション3: 参考アカウント
+            if (yPos > 250) {
+                doc.addPage();
+                yPos = 20;
+            }
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(220, 20, 60);
+            doc.text('3. 参考アカウント', margin, yPos);
+            yPos += 10;
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(0, 0, 0);
+
+            doc.setFont(undefined, 'bold');
+            doc.text('業種別参考アカウント:', margin, yPos);
+            yPos += 7;
+            sections["3_参考アカウント"]["業種別参考アカウント"].forEach(acc => {
+                doc.text(`・${acc}`, margin + 5, yPos, { maxWidth: maxWidth - 5 });
+                yPos += 6;
+            });
+            yPos += 5;
+
+            doc.setFont(undefined, 'bold');
+            doc.text('参考ポイント:', margin, yPos);
+            yPos += 7;
+            sections["3_参考アカウント"]["参考ポイント"].forEach(point => {
+                doc.text(`・${point}`, margin + 5, yPos, { maxWidth: maxWidth - 5 });
+                yPos += 6;
+            });
+            yPos += 15;
+
+            // セクション4: 運用プラン
+            if (yPos > 250) {
+                doc.addPage();
+                yPos = 20;
+            }
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(220, 20, 60);
+            doc.text('4. 運用プラン', margin, yPos);
+            yPos += 10;
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(0, 0, 0);
+
+            doc.setFont(undefined, 'bold');
+            doc.text('運用期間:', margin, yPos);
+            yPos += 7;
+            doc.setFont(undefined, 'normal');
+            doc.text(sections["4_運用プラン"]["運用期間"], margin, yPos, { maxWidth });
+            yPos += 10;
+
+            doc.setFont(undefined, 'bold');
+            doc.text('サービス内容:', margin, yPos);
+            yPos += 7;
+            sections["4_運用プラン"]["サービス内容"].forEach(service => {
+                doc.text(`・${service}`, margin + 5, yPos, { maxWidth: maxWidth - 5 });
+                yPos += 6;
+            });
+            yPos += 5;
+
+            doc.setFont(undefined, 'bold');
+            doc.text('成果指標:', margin, yPos);
+            yPos += 7;
+            sections["4_運用プラン"]["成果指標"].forEach(metric => {
+                doc.text(`・${metric}`, margin + 5, yPos, { maxWidth: maxWidth - 5 });
+                yPos += 6;
+            });
+            yPos += 15;
+
+            // セクション5: 費用
+            if (yPos > 250) {
+                doc.addPage();
+                yPos = 20;
+            }
+            doc.setFontSize(18);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(220, 20, 60);
+            doc.text('5. 費用', margin, yPos);
+            yPos += 10;
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(0, 0, 0);
+
+            doc.setFont(undefined, 'bold');
+            doc.text('基本料金:', margin, yPos);
+            yPos += 7;
+            doc.setFontSize(16);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(220, 20, 60);
+            doc.text(sections["5_費用"]["基本料金"], margin, yPos);
+            yPos += 10;
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'normal');
+            doc.setTextColor(0, 0, 0);
+            doc.text(`備考: ${sections["5_費用"]["備考"]}`, margin, yPos, { maxWidth });
+
+            doc.save(`【${currentProposal.client_name}御中】SNP_アカウント企画提案資料1.pdf`);
+        }
+    </script>
+</body>
+</html>
