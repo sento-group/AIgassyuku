@@ -170,13 +170,36 @@ end note
 
 ## 事前準備：GitHub & Cursorセットアップ
 
-### Step 1: GitHubアカウント作成
+### Step 1: Cursorのダウンロードとインストール
+
+1. https://cursor.com にアクセス
+2. 「Download for Mac」または「Download for Windows」をクリック
+3. ダウンロードしたファイルを実行してインストール
+   - **Mac**: `.dmg` ファイルを開き、CursorアイコンをApplicationsフォルダにドラッグ
+   - **Windows**: `.exe` ファイルを実行し、インストーラーの指示に従う
+4. Cursorを起動して初期画面が表示されることを確認
+
+📄 **詳細手順**: [1Cursor基本レクチャー.md](./1Cursor基本レクチャー.md) の「1. ダウンロードとインストール」を参照
+
+### Step 2: Cursorアカウント作成
+
+1. Cursor起動後、画面右下の「Sign In」をクリック
+2. ブラウザが開いたら、以下のいずれかでサインアップ：
+   - **Google** でサインアップ（推奨）
+   - **GitHub** でサインアップ
+   - **メールアドレス** でサインアップ
+3. アカウント作成完了後、Cursorに戻る
+4. 右下に自分のアカウント名が表示されれば成功
+
+📄 **詳細手順**: [1Cursor基本レクチャー.md](./1Cursor基本レクチャー.md) の「2. アカウント作成とログイン」を参照
+
+### Step 3: GitHubアカウント作成
 
 1. https://github.com にアクセス
 2. 「Sign up」からアカウント作成
 3. メール認証を完了
 
-### Step 2: リポジトリをClone
+### Step 4: リポジトリをClone
 
 GitHubの画面で緑色の「Code」ボタンを押し、URLをコピーします。
 
@@ -186,7 +209,7 @@ GitHubの画面で緑色の「Code」ボタンを押し、URLをコピーしま�
 git clone https://github.com/sento-group/AIgassyuku.git
 ```
 
-### Step 3: CursorでリポジトリをOpen
+### Step 5: CursorでリポジトリをOpen
 
 1. Cursorを起動 → 「File」→「Open Folder」（またはClone直後の画面から選択）
 
@@ -195,6 +218,8 @@ git clone https://github.com/sento-group/AIgassyuku.git
 
 2. Cloneした `AIgassyuku` フォルダを選択
 3. 左サイドバーに `AI合宿v2` フォルダが見えればOK
+
+📄 **詳細手順**: [1Cursor基本レクチャー.md](./1Cursor基本レクチャー.md) を参照
 
 → **ここまで完了したら授業開始！**
 
