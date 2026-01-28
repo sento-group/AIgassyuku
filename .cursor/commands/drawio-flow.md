@@ -1,0 +1,1 @@
+../../../common-tools/.cursor/commands/drawio-flow.md

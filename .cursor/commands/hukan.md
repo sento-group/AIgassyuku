@@ -1,0 +1,1 @@
+../../../common-tools/.cursor/commands/hukan.md
