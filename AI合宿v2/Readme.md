@@ -2,6 +2,7 @@
 
 ## 目次
 
+- [Cursorで作れるもの](#-cursorで作れるもの)
 - [目標](#目標)
 - [前回との違い](#前回との違い)
 - [コンセプト](#コンセプト)
@@ -15,6 +16,60 @@
 - [.cursorフォルダとコマンドの解説](#cursorフォルダとコマンドの解説)
 - [PlantUML Tips](#plantuml-tips)
 - [運営メモ](#運営メモ)
+
+---
+
+## 🎨 Cursorで作れるもの
+
+「Cursorって何が作れるの？」という疑問に答えます。
+**プログラミング経験ゼロでも、AIと対話するだけで以下のようなものが作れます。**
+
+### 📄 ドキュメント系
+
+| 作れるもの | 具体例 | 所要時間目安 |
+|-----------|--------|-------------|
+| **提案書・企画書** | 新規事業提案、サービス企画書 | 30分〜1時間 |
+| **営業資料** | 商品説明資料、会社案内 | 20分〜40分 |
+| **業務マニュアル** | 新人向け手順書、FAQ | 30分〜1時間 |
+| **議事録** | 会議メモから構造化された議事録 | 10分〜20分 |
+| **分析レポート** | 競合分析、市場調査レポート | 30分〜1時間 |
+| **メール・文章** | 顧客への提案メール、お礼状 | 5分〜15分 |
+
+### 🌐 Webサイト系
+
+| 作れるもの | 具体例 | 所要時間目安 |
+|-----------|--------|-------------|
+| **ホームページ** | 会社HP、サービスLP | 1〜2時間 |
+| **ランディングページ** | キャンペーンLP、採用LP | 30分〜1時間 |
+| **ポートフォリオ** | 実績紹介サイト | 1〜2時間 |
+| **お問い合わせフォーム** | 見積もり依頼、申し込みフォーム | 30分〜1時間 |
+
+### 🛠️ 業務ツール系
+
+| 作れるもの | 具体例 | 所要時間目安 |
+|-----------|--------|-------------|
+| **簡易システム** | 顧客管理、在庫管理、予約管理 | 2〜4時間 |
+| **計算ツール** | 見積もり計算、ローンシミュレーター | 1〜2時間 |
+| **データ変換ツール** | CSV整形、PDF→テキスト変換 | 30分〜1時間 |
+| **チェックリスト** | タスク管理、品質チェック | 15分〜30分 |
+
+### 📊 図解・ビジュアル系
+
+| 作れるもの | 具体例 | 所要時間目安 |
+|-----------|--------|-------------|
+| **フロー図** | 業務フロー、意思決定フロー | 15分〜30分 |
+| **組織図** | 会社組織図、プロジェクト体制図 | 10分〜20分 |
+| **スライド構成** | プレゼン資料の骨子 | 20分〜40分 |
+
+### 💡 ポイント
+
+> **「自分には作れない」と思っていたものが、AIとの対話だけで作れます。**
+> 
+> - プログラミング知識は不要
+> - 完璧を目指さなくてOK（80%の完成度でまず作る）
+> - 作ったものを元に、どんどん改善できる
+> 
+> 今日の合宿では、この中から **「HP分析＆新HP作成」** と **「提案書」** を実際に作ります！
 
 ---
 
@@ -195,9 +250,235 @@ end note
 
 ### Step 3: GitHubアカウント作成
 
-1. https://github.com にアクセス
-2. 「Sign up」からアカウント作成
-3. メール認証を完了
+#### 3-1. GitHubのサイトにアクセス
+
+1. ブラウザで https://github.com にアクセス
+2. 画面右上の「**Sign up**」ボタンをクリック
+
+![GitHubトップページ](./image/github-top-signup.png)
+
+#### 3-2. メールアドレスの入力
+
+1. 「Enter your email」にメールアドレスを入力
+2. 「**Continue**」をクリック
+
+![メールアドレス入力](./image/github-email.png)
+
+#### 3-3. パスワードの設定
+
+1. パスワードを入力（15文字以上、または数字と小文字を含む8文字以上）
+2. 「**Continue**」をクリック
+
+![パスワード設定](./image/github-password.png)
+
+#### 3-4. ユーザー名の設定
+
+1. 好きなユーザー名を入力（英数字とハイフンのみ）
+2. 使用可能であれば緑のチェックマークが表示される
+3. 「**Continue**」をクリック
+
+![ユーザー名設定](./image/github-username.png)
+
+#### 3-5. メール設定とロボット認証
+
+1. メール配信の設定（「y」または「n」を入力）
+2. ロボットでないことを確認するパズルを解く
+3. 「**Create account**」をクリック
+
+![ロボット認証](./image/github-verify.png)
+
+#### 3-6. メール認証コードの入力
+
+1. 登録したメールアドレスに届いた認証コード（8桁の数字）を確認
+2. GitHub画面に認証コードを入力
+
+![メール認証コード入力](./image/github-email-code.png)
+
+#### 3-7. アカウント作成完了
+
+1. 以下のようなダッシュボード画面が表示されれば完了
+
+![GitHub完了画面](./image/github-welcome.png)
+
+> **📸 スクリーンショット撮影ガイド（運営向け）**
+>
+> 上記の手順に沿って実際にアカウントを作成し、各ステップでスクリーンショットを撮影してください。
+> ファイルは以下の名前で `image/` フォルダに保存してください：
+>
+> | ステップ | ファイル名 |
+> |----------|------------|
+> | 3-1 | `github-top-signup.png` |
+> | 3-2 | `github-email.png` |
+> | 3-3 | `github-password.png` |
+> | 3-4 | `github-username.png` |
+> | 3-5 | `github-verify.png` |
+> | 3-6 | `github-email-code.png` |
+> | 3-7 | `github-welcome.png` |
+
+### 💡 GitHub・Cursor・チーム共有の関係（図解）
+
+GitHubやCursorが何をするものなのか、全体像を把握しましょう。
+
+#### 全体像：GitHubとみんなのPCの関係
+
+```plantuml
+@startuml GitHub全体像
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Hiragino Sans"
+skinparam rectangleBorderColor #333366
+skinparam rectangleFontSize 14
+
+title GitHubとみんなのPCの関係
+
+rectangle "**AI Gassyuku\nGitHub**\n（クラウド上の共有スペース）" as github #FF4444;text:white
+
+rectangle "和島のPC" as wajima #9966CC;text:white
+rectangle "橘田さんのPC" as kitsuda #9966CC;text:white
+rectangle "AさんのPC" as personA #9966CC;text:white
+rectangle "BさんのPC" as personB #9966CC;text:white
+
+github -down--> wajima : **Pull（取得する）**\nGitHubから最新の\nファイルをダウンロード
+wajima -up--> github : **Push（あっぷする）**\nPCで作業した\n結果をアップロード
+
+github -down--> kitsuda
+kitsuda -up--> github : **Push**
+
+github -down--> personA
+personA -up--> github : **Push**
+
+github -down--> personB
+personB -up--> github : **Push**
+
+note bottom of github
+  **GitHubとは？**
+  みんなのファイルを1か所にまとめて管理する
+  クラウドサービス。
+  誰が・いつ・何を変えたか全部記録される。
+end note
+
+note bottom of wajima
+  各自のPCで **Cursor（AIエディタ）** を使って
+  ファイルを編集し、完成したら GitHub に Push。
+  他の人の変更が欲しい時は Pull する。
+end note
+
+@enduml
+```
+
+**用語まとめ**：
+| 用語 | 意味 | イメージ |
+|------|------|----------|
+| **GitHub** | クラウド上の共有スペース | みんなの共有フォルダ |
+| **Push（プッシュ）** | 自分の変更をアップロード | 「できたよ！」と共有する |
+| **Pull（プル）** | 最新の変更をダウンロード | 「最新ちょうだい」と取得する |
+| **Cursor** | AI付きエディタ | 自分のPCでファイルを編集するツール |
+
+**ポイント**：
+- **GitHub** = クラウド上の共有フォルダ。チーム全員がアクセスできる
+- **Cursor** = AI付きのエディタ。手元のファイルを編集するツール
+- **ローカルPC** = 自分のPCにダウンロードしたファイル。ここで作業する
+
+#### 合宿での作業フロー
+
+```plantuml
+@startuml 作業フロー
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Hiragino Sans"
+
+title 合宿での作業フロー
+
+|あなたのPC|
+start
+:① **clone（クローン）**\nGitHubからファイルをダウンロード;
+note right: 最初の1回だけ
+
+:② **Cursorで編集**\nAIに質問しながらファイルを修正;
+note right
+  ここが合宿のメイン作業！
+  ・HP分析レポートを作成
+  ・新HPのプロトタイプを作成
+  ・提案書たたきを作成
+end note
+
+:③ **保存**\n編集した内容がローカルに保存される;
+
+|GitHub|
+:④ **push（プッシュ）**\n変更をGitHubにアップロード;
+note right: チームに共有したい時
+
+:⑤ **チーム全員が閲覧可能に**\nメンバーがpullでダウンロードできる;
+
+|あなたのPC|
+:⑥ **pull（プル）**\n他メンバーの変更を取り込む;
+note right: 他の人の成果を見たい時
+
+stop
+
+@enduml
+```
+
+**ポイント**：
+- **clone**（クローン）= 最初にファイルをダウンロードすること
+- **push**（プッシュ）= 自分の変更をGitHubにアップロードすること
+- **pull**（プル）= 他の人の変更をダウンロードすること
+
+#### 経営者向け：実務での活用ケース
+
+```plantuml
+@startuml 活用ケース
+!theme plain
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Hiragino Sans"
+
+title 実務での活用ケース
+
+rectangle "**ケース1：社内マニュアルの共同編集**" as case1 #lightblue {
+  card "Aさん：手順書を作成" as a1
+  card "Bさん：レビュー・修正" as b1
+  card "GitHub：履歴が全部残る" as g1
+  a1 -right-> g1 : push
+  g1 -right-> b1 : pull
+}
+
+rectangle "**ケース2：提案書のチーム作成**" as case2 #lightgreen {
+  card "営業：顧客情報をInput" as a2
+  card "企画：Cursorで提案書作成" as b2
+  card "上司：GitHubでレビュー" as c2
+  a2 -right-> b2 : 共有
+  b2 -right-> c2 : push
+}
+
+rectangle "**ケース3：Webサイトの更新管理**" as case3 #lightyellow {
+  card "担当者：HPを修正" as a3
+  card "GitHub：変更履歴を記録" as b3
+  card "問題があれば元に戻せる" as c3
+  a3 -right-> b3 : push
+  b3 -right-> c3 : 履歴管理
+}
+
+note bottom of case1
+  **Googleドキュメントとの違い**
+  ・誰が・いつ・何を変えたか全て記録
+  ・過去の任意の時点に戻せる
+  ・同時編集の衝突を防げる
+end note
+
+@enduml
+```
+
+**Googleドライブとの比較**：
+
+| 項目 | Googleドライブ | GitHub + Cursor |
+|------|---------------|-----------------|
+| ファイル共有 | ○ できる | ○ できる |
+| 変更履歴 | △ 限定的 | ◎ 全変更を完全記録 |
+| 過去に戻す | △ 難しい | ◎ いつでも戻せる |
+| AI活用 | △ 別ツール必要 | ◎ Cursorに組み込み済み |
+| 向いている用途 | 文書・スプレッドシート | コード・HTML・マニュアル等 |
+
+---
 
 ### Step 4: リポジトリをClone
 

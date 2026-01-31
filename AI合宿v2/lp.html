@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI合宿v2 - Cursorで実践するAIサイクル | 経営者向け1日集中プログラム</title>
+    <meta name="description" content="経営者向けAI合宿。Cursorを使いこなし、AIサイクル（Input→加工→Output→Action）を実践の中で体感。プログラミング経験ゼロでも、1日で業務に使える武器を手に入れます。">
+    
+    <!-- OGP -->
+    <meta property="og:title" content="AI合宿v2 - Cursorで実践するAIサイクル">
+    <meta property="og:description" content="経営者向けAI合宿。Cursorを使いこなし、AIサイクル（Input→加工→Output→Action）を実践の中で体感。プログラミング経験ゼロでも、1日で業務に使える武器を手に入れます。">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="AI合宿v2">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AI合宿v2 - Cursorで実践するAIサイクル">
+    <meta name="twitter:description" content="経営者向けAI合宿。Cursorを使いこなし、AIサイクルを実践の中で体感。プログラミング経験ゼロでも、1日で業務に使える武器を手に入れます。">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --mela-red: #e60000;
+            --mela-red-dark: #cc0000;
+            --mela-black: #000000;
+            --mela-gray: #333333;
+            --mela-light-gray: #f5f5f5;
+            --mela-white: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+            color: var(--mela-black);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ヘッダー */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: transparent;
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        header.scrolled {
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--mela-black);
+            text-decoration: none;
+        }
+
+        header.scrolled .header-logo {
+            color: var(--mela-white);
+        }
+
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--mela-red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--mela-white);
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .header-nav a {
+            color: var(--mela-black);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+        }
+
+        header.scrolled .header-nav a {
+            color: var(--mela-white);
+        }
+
+        .header-nav a:hover {
+            color: var(--mela-red);
+        }
+
+        .nav-recruit {
+            border: 1px solid var(--mela-red);
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            color: var(--mela-red) !important;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled .nav-recruit {
+            border-color: var(--mela-red);
+            color: var(--mela-red) !important;
+        }
+
+        .nav-recruit:hover {
+            background: var(--mela-red);
+            color: var(--mela-white) !important;
+        }
+
+        /* ヒーローセクション */
+        .hero {
+            background: var(--mela-red);
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 8rem 4rem 4rem;
+            overflow: hidden;
+        }
+
+        /* グリッドパターン */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.3;
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-text {
+            color: var(--mela-black);
+        }
+
+        .hero-title {
+            font-size: 4.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .hero-description {
+            font-size: 1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .hero-tagline {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 2rem;
+        }
+
+        .hero-visual {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 3D AIアイコン（ハートの代わり） */
+        .ai-icon-3d {
+            width: 400px;
+            height: 400px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotateY(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotateY(10deg);
+            }
+        }
+
+        .ai-icon-3d::before {
+            content: 'AI';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.1) 100%);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8rem;
+            font-weight: 900;
+            color: var(--mela-black);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.3),
+                inset 0 10px 30px rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        /* サービスセクション */
+        .service-section {
+            background: var(--mela-red);
+            padding: 8rem 4rem;
+            position: relative;
+        }
+
+        .service-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.3;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-size: 5rem;
+            font-weight: 900;
+            color: var(--mela-red);
+            margin-bottom: 4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-section .section-title {
+            color: var(--mela-white);
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .service-card {
+            background: var(--mela-gray);
+            border-radius: 12px;
+            padding: 3rem;
+            border-bottom: 4px solid var(--mela-red);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .service-card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--mela-white);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .service-card-subtitle {
+            font-size: 1rem;
+            color: var(--mela-red);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-card-description {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .service-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+        }
+
+        .service-tag {
+            background: var(--mela-red);
+            color: var(--mela-white);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .service-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--mela-white);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid var(--mela-red);
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .service-link:hover {
+            background: var(--mela-red);
+            color: var(--mela-white);
+        }
+
+        /* 波状の区切り線 */
+        .wave-divider {
+            position: relative;
+            height: 100px;
+            overflow: hidden;
+        }
+
+        .wave-divider svg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* WORKSセクション */
+        .works-section {
+            background: var(--mela-black);
+            padding: 8rem 4rem;
+        }
+
+        .works-section .section-title {
+            text-align: center;
+            color: var(--mela-red);
+        }
+
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .work-item {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .work-item:hover {
+            transform: scale(1.02);
+        }
+
+        .work-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .work-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+            display: flex;
+            align-items: flex-end;
+            padding: 2rem;
+        }
+
+        .work-title {
+            color: var(--mela-white);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .works-link {
+            display: block;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        /* MEMBERセクション */
+        .member-section {
+            background: var(--mela-black);
+            padding: 8rem 4rem;
+        }
+
+        .member-section .section-title {
+            text-align: center;
+            color: var(--mela-red);
+            margin-bottom: 4rem;
+        }
+
+        .member-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .member-item {
+            aspect-ratio: 1;
+            overflow: hidden;
+            border-radius: 8px;
+            filter: grayscale(100%);
+            transition: filter 0.3s ease, transform 0.3s ease;
+        }
+
+        .member-item:hover {
+            filter: grayscale(0%);
+            transform: scale(1.05);
+        }
+
+        .member-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .member-link {
+            display: block;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        /* フッター */
+        footer {
+            background: var(--mela-light-gray);
+            padding: 6rem 4rem 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .footer-tagline {
+            color: var(--mela-red);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-logo-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--mela-red);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--mela-white);
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .footer-logo-text {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--mela-red);
+        }
+
+        .footer-logo-subtext {
+            font-size: 1.2rem;
+            color: var(--mela-red);
+            font-weight: 600;
+            margin-top: -0.5rem;
+        }
+
+        .footer-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .footer-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .footer-nav-item::before {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: var(--mela-red);
+            border-radius: 50%;
+        }
+
+        .footer-nav-item a {
+            color: var(--mela-black);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .footer-nav-item a:hover {
+            color: var(--mela-red);
+        }
+
+        .footer-contact-btn {
+            display: inline-block;
+            margin-top: 2rem;
+            border: 1px solid var(--mela-red);
+            color: var(--mela-red);
+            padding: 0.75rem 2rem;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .footer-contact-btn:hover {
+            background: var(--mela-red);
+            color: var(--mela-white);
+        }
+
+        .footer-copyright {
+            text-align: center;
+            padding-top: 3rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            color: rgba(0, 0, 0, 0.6);
+            font-size: 0.9rem;
+        }
+
+        /* ボタン共通スタイル */
+        .btn-view-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--mela-white);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid var(--mela-red);
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view-more:hover {
+            background: var(--mela-red);
+            color: var(--mela-white);
+        }
+
+        /* レスポンシブ */
+        @media (max-width: 1024px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .ai-icon-3d {
+                width: 300px;
+                height: 300px;
+            }
+
+            .service-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .works-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .member-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 1.5rem 2rem;
+            }
+
+            .header-nav {
+                display: none;
+            }
+
+            .hero {
+                padding: 6rem 2rem 4rem;
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .service-section,
+            .works-section,
+            .member-section {
+                padding: 4rem 2rem;
+            }
+
+            .section-title {
+                font-size: 3rem;
+            }
+
+            .ai-icon-3d {
+                width: 250px;
+                height: 250px;
+            }
+
+            .member-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            footer {
+                padding: 4rem 2rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ヘッダー -->
+    <header id="header">
+        <a href="#" class="header-logo">
+            <div class="logo-icon">AI</div>
+            <span>AI合宿v2</span>
+        </a>
+        <nav>
+            <ul class="header-nav">
+                <li><a href="#top">TOP</a></li>
+                <li><a href="#program">PROGRAM</a></li>
+                <li><a href="#benefits">BENEFITS</a></li>
+                <li><a href="#works">WORKS</a></li>
+                <li><a href="#member">MEMBER</a></li>
+                <li><a href="#contact">CONTACT</a></li>
+                <li><a href="#apply" class="nav-recruit">申し込む</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ヒーローセクション -->
+    <section class="hero" id="top">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">実践を学びに、<br>学びを成果に。</h1>
+                <p class="hero-subtitle">PRACTICE INTO LEARNING. LEARNING INTO RESULTS.</p>
+                <p class="hero-description">
+                    プログラミング経験ゼロでも、AIとの対話だけで業務に使える成果物を作れるようになる。
+                    経営者向け1日集中プログラムで、Cursorを使いこなし、AIサイクル（Input→加工→Output→Action）を実践の中で体感する。
+                    明日から使える武器を手に入れましょう。
+                </p>
+                <p class="hero-description">
+                    講義で概念を教えるのではなく、実習を通じて自然と身につける。
+                    1日で「自分でできる」状態で帰る。
+                </p>
+                <p class="hero-tagline">We are AI Bootcamp v2.</p>
+            </div>
+            <div class="hero-visual">
+                <div class="ai-icon-3d"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- サービスセクション -->
+    <section class="service-section" id="program">
+        <h2 class="section-title">PROGRAM</h2>
+        <div class="service-grid">
+            <div class="service-card">
+                <h3 class="service-card-title">Cursor基礎レクチャー</h3>
+                <p class="service-card-subtitle">実践的スキル習得</p>
+                <p class="service-card-description">
+                    環境構築からComposer操作まで一通り習得。自分で質問・指示ができる状態になる。
+                    プログラミング経験ゼロでも、AIとの対話だけで操作できる。
+                </p>
+                <div class="service-tags">
+                    <span class="service-tag">環境構築</span>
+                    <span class="service-tag">Composer操作</span>
+                    <span class="service-tag">実習形式</span>
+                </div>
+                <a href="#program" class="service-link">詳しく見る →</a>
+            </div>
+            <div class="service-card">
+                <h3 class="service-card-title">AIサイクル実践</h3>
+                <p class="service-card-subtitle">Input→加工→Output→Action</p>
+                <p class="service-card-description">
+                    HP分析・新HP作成・提案書作成まで、実際に手を動かしながらAIサイクルを体感する。
+                    一度で終わりではなく、繰り返し回すことで精度が上がる循環構造を学ぶ。
+                </p>
+                <div class="service-tags">
+                    <span class="service-tag">HP分析</span>
+                    <span class="service-tag">提案書作成</span>
+                    <span class="service-tag">AIサイクル</span>
+                    <span class="service-tag">実践形式</span>
+                </div>
+                <a href="#program" class="service-link">詳しく見る →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 波状の区切り線 -->
+    <div class="wave-divider">
+        <svg viewBox="0 0 1440 100" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0,50 Q360,0 720,50 T1440,50 L1440,100 L0,100 Z" fill="#000000"/>
+        </svg>
+    </div>
+
+    <!-- WORKSセクション -->
+    <section class="works-section" id="works">
+        <h2 class="section-title">WORKS</h2>
+        <div class="works-grid">
+            <div class="work-item">
+                <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&h=600&fit=crop&q=80" alt="チームワーク">
+                <div class="work-overlay">
+                    <h3 class="work-title">HP分析＆新HP作成</h3>
+                </div>
+            </div>
+            <div class="work-item">
+                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800&h=600&fit=crop&q=80" alt="テクノロジー">
+                <div class="work-overlay">
+                    <h3 class="work-title">提案書たたき作成</h3>
+                </div>
+            </div>
+            <div class="work-item">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=600&fit=crop&q=80" alt="ビジネス分析">
+                <div class="work-overlay">
+                    <h3 class="work-title">AIサイクル実践</h3>
+                </div>
+            </div>
+            <div class="work-item">
+                <img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=600&fit=crop&q=80" alt="学習">
+                <div class="work-overlay">
+                    <h3 class="work-title">定着パック</h3>
+                </div>
+            </div>
+        </div>
+        <div class="works-link">
+            <a href="#works" class="btn-view-more">view more →</a>
+        </div>
+    </section>
+
+    <!-- MEMBERセクション -->
+    <section class="member-section" id="member">
+        <h2 class="section-title">MEMBER</h2>
+        <div class="member-grid">
+            <div class="member-item">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&q=80" alt="メンバー1">
+            </div>
+            <div class="member-item">
+                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=400&fit=crop&q=80" alt="メンバー2">
+            </div>
+            <div class="member-item">
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&q=80" alt="メンバー3">
+            </div>
+            <div class="member-item">
+                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop&q=80" alt="メンバー4">
+            </div>
+            <div class="member-item">
+                <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop&q=80" alt="メンバー5">
+            </div>
+            <div class="member-item">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&q=80" alt="メンバー6">
+            </div>
+        </div>
+        <div class="member-link">
+            <a href="#member" class="btn-view-more">view more →</a>
+        </div>
+    </section>
+
+    <!-- フッター -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <p class="footer-tagline">We are AI Bootcamp v2.</p>
+                <div class="footer-logo">
+                    <div class="footer-logo-icon">AI</div>
+                    <div>
+                        <div class="footer-logo-text">AI合宿v2</div>
+                        <div class="footer-logo-subtext">creative bootcamp</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-nav">
+                <div class="footer-nav-item"><a href="#top">TOP</a></div>
+                <div class="footer-nav-item"><a href="#program">PROGRAM（プログラム）</a></div>
+                <div class="footer-nav-item"><a href="#benefits">BENEFITS（メリット）</a></div>
+                <div class="footer-nav-item"><a href="#works">WORKS（実績）</a></div>
+                <div class="footer-nav-item"><a href="#member">MEMBER（メンバー）</a></div>
+                <div class="footer-nav-item"><a href="#contact">CONTACT（お問い合わせ）</a></div>
+                <a href="#apply" class="footer-contact-btn">CONTACT</a>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <small>&copy; 2025 AI合宿v2. All rights reserved.</small>
+        </div>
+    </footer>
+
+    <script>
+        // ヘッダーのスクロール効果
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // スムーススクロール
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

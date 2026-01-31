@@ -1,0 +1,44 @@
+@startuml GitHub-Cursor-concept
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName "Hiragino Sans"
+skinparam defaultFontSize 13
+skinparam rectangleBorderColor #333366
+skinparam arrowColor #555555
+
+title GitHub と Cursor の関係性（概念図）
+
+rectangle "**GitHub**\nクラウド上の共有スペース\n・リポジトリ\n・バージョン管理\n・チーム共有の拠点" as github #E8E8E8
+
+rectangle "**ワークスペース**\nCloneしたフォルダ\n・md / html / 画像など\n・ここで編集・保存" as workspace #E8E8E8
+
+rectangle "**Cursor**\nAI付きエディタ\n・Composerで対話編集\n・@ファイル名で参照" as cursor #BBDEFB
+
+actor "**あなた**\n開発者・利用者" as user #E1BEE7
+
+user -down-> cursor : 起動・操作
+user -down-> github : ブラウザで閲覧
+cursor .right.> github : サインイン連携
+
+note right of cursor
+  Cursorのログイン方法の1つが
+  GitHubでサインアップ
+end note
+
+github -down--> workspace : Clone\n初回にダウンロード
+workspace -up--> github : Push\n編集結果をアップロード
+github -down--> workspace : Pull\n最新を取得
+
+cursor -down-> workspace : Open Folder\nフォルダを開いて編集
+workspace -up-> cursor : 保存\nローカルに反映
+
+legend right
+  用語
+  ----
+  GitHub = クラウド上の共有スペース
+  Cursor = AI付きエディタ
+  Clone = リポジトリをPCにダウンロード
+  Push = 変更をGitHubにアップロード
+  Pull = 最新をGitHubから取得
+endlegend
+
+@enduml
