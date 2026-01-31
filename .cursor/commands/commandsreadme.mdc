@@ -1,1 +1,72 @@
-../../../common-tools/.cursor/commands/commandsreadme.mdc
+---
+alwaysApply: true
+---
+# Command README 更新ルール（.cursor/commands）
+
+あなたは、このリポジトリの `.cursor/commands/` を **Command（@コマンド）のシングルソース**として維持する担当です。
+
+## 🎯 目的
+
+- `.cursor/commands/` に新しいコマンド（`.md`）が追加・更新されたら、必ず `.cursor/commands/README.md` の **コマンド一覧表**を最新化する
+- 命名ブレを防ぎ、参照リンク体系を `.cursor/commands/README.md` に統一する
+
+> **運用**: README自動追記と重複検知は `commandsmaintenance.mdc`（alwaysApply）で常時適用する
+
+---
+
+## ✅ ルール（最優先）
+
+### 1) シングルソース
+- コマンドの正本は **常に** `.cursor/commands/*.md`
+- 既存のREADME+MDC専用フォルダ（例：`VIPE開発アシスタント/` など）は残さない（必要な内容は Command に統合する）
+
+### 2) 命名規則（ブレ禁止）
+- コマンド名（呼び出し名）は **ファイル名（拡張子なし）と完全一致**させる
+  - 例：`/Users/.../.cursor/commands/nouhinseiri.md` → `@nouhinseiri`
+- **小文字ASCIIのみ**（`a-z0-9`）。区切り記号（`_` `-`）や空白は禁止
+  - 例：✅ `productdialogue` / ❌ `product-dialogue` / ❌ `product_dialogue`
+- 既存コマンドに合わせ、**語尾は短く・一意に**する（意味が被る場合は用途が分かる語を足す）
+
+### 3) README更新（必須）
+新規コマンド追加・既存コマンドの用途変更があったら、必ず `.cursor/commands/README.md` の表を更新する：
+- **コマンド**: `@xxx`
+- **用途（1行）**: 20〜40文字程度の要約（コマンド本文の最初の目的/特徴から抽出）
+- **ファイル**: `./xxx.md` への相対リンク
+
+### 4) 参照リンク体系の統一（必須）
+- リポジトリ内のドキュメントが、旧フォルダ（例：`hukan/README.md`）を参照している場合は、原則として
+  - `.cursor/commands/README.md`（一覧）または
+  - `.cursor/commands/<command>.md`（直接）
+  に置き換える
+
+---
+
+## 📌 コマンド対応表（固定）
+
+以下は「どの概念をどのコマンド名で呼ぶか」の固定表。追加・変更時はこの表も更新する。
+
+| コマンド名 | 役割（短文） | 備考 |
+|---|---|---|
+| `gyaru` | 意味強度を診断し、伝達効率の高い言葉へ変換 |  |
+| `hukan` | 俯瞰チェック/シングルソース化 |  |
+| `nouhinseiri` | 納品成果物整備 | `@nouhin_seiri` のような表記は使わない |
+| `plantuml` | Go/NoGo判定〜PlantUMLフロー生成 |  |
+| `sync` | Git同期ルール |  |
+| `vipe` | VIPEでフィードバック構造化 |  |
+| `productdialogue` | 対話で構想整理→領域判定→成果物一括生成 |  |
+| `primitivemock` | 期待値を壊さず画面モック合意を進める |  |
+| `knowledgecoach` | 情報整理・ナレッジ構築コーチ（Why→What→How） |  |
+| `mdcintent` | MDC設計意図分析 |  |
+| `pminfocollect` | PM情報収集プラン（PlantUML） |  |
+| `responsibilitydiagram` | 責任分担図（PlantUML） |  |
+| `oxytocin` | 提案書ガイドライン |  |
+
+---
+
+## 🧪 変更時チェック（最低限）
+
+- `.cursor/commands/README.md` の表に追加・更新したか
+- 新規コマンド名が命名規則に違反していないか（小文字ASCII・区切りなし）
+- 旧フォルダ参照リンクが残っていないか（可能な範囲で置換）
+- 重複コマンド（内容が同一の別名）が増えていないか（必要なら統合して片方を削除）
+
