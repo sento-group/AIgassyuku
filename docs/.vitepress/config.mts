@@ -143,6 +143,22 @@ export default defineConfig({
       text: '最終更新',
     },
 
+    search: {
+      provider: 'local',
+      options: {
+        translations: {
+          button: { buttonText: '検索', buttonAriaLabel: '検索' },
+          modal: {
+            displayDetails: '詳細を表示',
+            resetButtonTitle: 'リセット',
+            backButtonTitle: '戻る',
+            noResultsText: '見つかりませんでした',
+            footer: { selectText: '選択', navigateText: '移動', closeText: '閉じる' },
+          },
+        },
+      },
+    },
+
     socialLinks: [
       { icon: 'github', link: 'https://github.com/sento-group/AIgassyuku' },
     ],

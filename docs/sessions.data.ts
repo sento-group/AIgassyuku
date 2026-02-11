@@ -33,6 +33,6 @@ export default createContentLoader('sessions/**/*.md', {
         date: normalizeDate(page.frontmatter.date),
         url: page.url,
       }))
-      .sort((a, b) => a.date.localeCompare(b.date))
+      .sort((a, b) => b.date.localeCompare(a.date))
   },
 })

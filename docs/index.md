@@ -6,4 +6,6 @@ sidebar: false
 
 # 授業セッション
 
+<ProgressBar />
+
 <SessionGrid />
