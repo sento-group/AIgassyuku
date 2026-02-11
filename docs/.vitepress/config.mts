@@ -1,13 +1,38 @@
 import { defineConfig } from 'vitepress'
 import { deflateSync } from 'node:zlib'
+import { execSync } from 'node:child_process'
+import crypto from 'node:crypto'
 import fs from 'fs'
 import path from 'path'
+
+const CACHE_DIR = path.resolve(__dirname, '../../.plantuml-cache')
 
 // PlantUML → Kroki.io SVG URL
 function plantumlToKrokiUrl(source: string): string {
   const data = Buffer.from(source, 'utf8')
   const compressed = deflateSync(data, { level: 9 })
   return `https://kroki.io/plantuml/svg/${compressed.toString('base64url')}`
+}
+
+// ビルド時にKroki.ioからSVGを取得してインラインに（キャッシュ付き）
+function getPlantUmlSvg(source: string): string {
+  const hash = crypto.createHash('md5').update(source).digest('hex')
+  const cachePath = path.join(CACHE_DIR, `${hash}.svg`)
+
+  if (fs.existsSync(cachePath)) {
+    return fs.readFileSync(cachePath, 'utf-8')
+  }
+
+  const url = plantumlToKrokiUrl(source)
+  try {
+    fs.mkdirSync(CACHE_DIR, { recursive: true })
+    const svg = execSync(`curl -sf "${url}"`, { encoding: 'utf-8', timeout: 15000 })
+    if (svg && svg.includes('<svg')) {
+      fs.writeFileSync(cachePath, svg)
+      return svg
+    }
+  } catch { /* fallback to external img */ }
+  return `<img src="${url}" alt="PlantUML Diagram" loading="lazy" />`
 }
 
 // 授業セッションのサイドバー自動生成
@@ -53,7 +78,7 @@ function getSessionSidebar() {
 
   for (const [year, yearItems] of years) {
     items.push({
-      text: `📅 ${year}年`,
+      text: `${year}年`,
       collapsed: year !== '2026',
       items: yearItems.map(({ text, link }) => ({ text, link })),
     })
@@ -61,7 +86,7 @@ function getSessionSidebar() {
 
   if (other.length > 0) {
     items.push({
-      text: '📚 リファレンス',
+      text: 'リファレンス',
       collapsed: true,
       items: other,
     })
@@ -93,7 +118,6 @@ export default defineConfig({
 
     nav: [
       { text: 'ホーム', link: '/' },
-      { text: '授業一覧', link: '/sessions/' },
     ],
 
     sidebar: {
@@ -126,14 +150,14 @@ export default defineConfig({
 
   markdown: {
     config: (md) => {
-      // PlantUML fenced code blocks → Kroki.io SVG images
+      // PlantUML fenced code blocks → ビルド時にSVGインライン化
       const defaultFence = md.renderer.rules.fence!.bind(md.renderer.rules)
       md.renderer.rules.fence = (tokens, idx, options, env, self) => {
         const token = tokens[idx]
         if (token.info.trim() === 'plantuml') {
           const source = token.content.trim()
-          const url = plantumlToKrokiUrl(source)
-          return `<div class="plantuml-diagram"><img src="${url}" alt="PlantUML Diagram" loading="lazy" /></div>\n`
+          const svg = getPlantUmlSvg(source)
+          return `<div class="plantuml-diagram">${svg}</div>\n`
         }
         return defaultFence(tokens, idx, options, env, self)
       }

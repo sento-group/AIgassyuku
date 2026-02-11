@@ -3,17 +3,12 @@
   --vp-font-family-base: 'Inter', 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* ===== Brand Colors - Education Purple ===== */
+/* ===== Brand Colors ===== */
 :root {
   --vp-c-brand-1: #4f46e5;
   --vp-c-brand-2: #6366f1;
   --vp-c-brand-3: #818cf8;
   --vp-c-brand-soft: rgba(99, 102, 241, 0.08);
-
-  --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: linear-gradient(135deg, #4f46e5 10%, #7c3aed 100%);
-  --vp-home-hero-image-background-image: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 10%, rgba(167, 139, 250, 0.2) 100%);
-  --vp-home-hero-image-filter: blur(56px);
 
   --vp-button-brand-bg: #4f46e5;
   --vp-button-brand-hover-bg: #4338ca;
@@ -25,60 +20,11 @@
   --vp-c-brand-2: #6366f1;
   --vp-c-brand-3: #4f46e5;
   --vp-c-brand-soft: rgba(129, 140, 248, 0.1);
-
-  --vp-button-brand-bg: #6366f1;
-  --vp-button-brand-hover-bg: #818cf8;
-  --vp-button-brand-active-bg: #4f46e5;
 }
 
-/* ===== Home Page Hero ===== */
-.VPHero .tagline {
-  font-size: 1.15rem !important;
-  max-width: 560px;
-  line-height: 1.6;
-}
-
-.VPHero .actions .VPButton.brand {
-  border-radius: 9999px;
-  padding: 0 28px;
-  font-weight: 600;
-}
-
-.VPHero .actions .VPButton.alt {
-  border-radius: 9999px;
-  padding: 0 28px;
-}
-
-/* ===== Features ===== */
-.VPFeature {
-  border-radius: 16px !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.VPFeature:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-}
-
-.VPFeature .icon {
-  font-size: 2rem;
-}
-
-.VPFeature .title {
-  font-weight: 700 !important;
-}
-
-/* ===== Sidebar - Course Outline ===== */
-.VPSidebar {
-  font-size: 13px;
-}
-
+/* ===== Sidebar ===== */
 .VPSidebarItem .text {
   line-height: 1.5;
-}
-
-.VPSidebarItem.level-0 > .item > .indicator {
-  display: none;
 }
 
 .VPSidebarItem.level-0 > .item > .text {
@@ -87,79 +33,131 @@
   color: var(--vp-c-brand-1);
 }
 
-.VPSidebarItem.level-1 > .item {
-  padding-left: 4px;
-}
-
-.VPSidebarItem.level-1 > .item > .text {
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.VPSidebarItem.level-2 > .item > .text {
-  font-size: 12.5px;
-}
-
 .VPSidebarItem.is-active > .item > .text {
   color: var(--vp-c-brand-1) !important;
   font-weight: 600;
 }
 
-/* ===== Content Area - LMS Style ===== */
-.vp-doc h1 {
-  font-size: 2rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #1e1b4b, #4f46e5);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* ===== Content - 講義資料の可読性向上 ===== */
+.vp-doc {
+  font-size: 15px;
+  line-height: 1.8;
 }
 
-.dark .vp-doc h1 {
-  background: linear-gradient(135deg, #c7d2fe, #818cf8);
-  -webkit-background-clip: text;
-  background-clip: text;
+.vp-doc h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--vp-c-brand-soft);
 }
 
 .vp-doc h2 {
-  margin-top: 2.5rem;
-  padding-top: 1.5rem;
+  margin-top: 48px;
+  padding-top: 24px;
   font-size: 1.4rem;
   font-weight: 700;
   border-top: 1px solid var(--vp-c-divider);
 }
 
 .vp-doc h3 {
+  margin-top: 32px;
   font-size: 1.15rem;
   font-weight: 600;
 }
 
-/* ===== Tables - Cleaner ===== */
+.vp-doc h4 {
+  margin-top: 24px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* 段落の間隔 */
+.vp-doc p {
+  margin: 16px 0;
+}
+
+/* リストの可読性 */
+.vp-doc ul,
+.vp-doc ol {
+  margin: 12px 0;
+  padding-left: 24px;
+}
+
+.vp-doc li {
+  margin: 6px 0;
+}
+
+.vp-doc li + li {
+  margin-top: 6px;
+}
+
+/* ===== Tables - 見やすく ===== */
 .vp-doc table {
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid var(--vp-c-divider);
+  font-size: 0.9em;
+  margin: 20px 0;
+  width: 100%;
 }
 
 .vp-doc table th {
   background: var(--vp-c-brand-soft);
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.85em;
+  padding: 10px 14px;
+  text-align: left;
 }
 
 .vp-doc table td {
-  font-size: 0.875rem;
+  padding: 10px 14px;
 }
 
 .vp-doc table tr:nth-child(even) {
   background: var(--vp-c-bg-soft);
 }
 
+.vp-doc table tr:hover {
+  background: var(--vp-c-bg-mute);
+}
+
+/* ===== Blockquotes - コールアウト風 ===== */
+.vp-doc blockquote {
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--vp-c-brand-soft), rgba(99, 102, 241, 0.04));
+  border-left: 4px solid var(--vp-c-brand-1);
+  padding: 16px 20px;
+  margin: 20px 0;
+}
+
+.vp-doc blockquote p {
+  color: var(--vp-c-text-1);
+  margin: 8px 0;
+}
+
+.vp-doc blockquote p:first-child {
+  margin-top: 0;
+}
+
+.vp-doc blockquote p:last-child {
+  margin-bottom: 0;
+}
+
 /* ===== Code Blocks ===== */
 .vp-doc div[class*='language-'] {
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid var(--vp-c-divider);
+  margin: 20px 0;
+}
+
+.vp-doc :not(pre) > code {
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 0.88em;
+  font-weight: 500;
+  background: var(--vp-c-bg-mute);
 }
 
 /* ===== PlantUML Diagrams ===== */
@@ -167,60 +165,65 @@
   display: flex;
   justify-content: center;
   padding: 24px 0;
-  margin: 16px 0;
+  margin: 20px 0;
 }
 
+.plantuml-diagram svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* SVGインライン表示用のラッパー */
+.plantuml-diagram {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid var(--vp-c-divider);
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.dark .plantuml-diagram {
+  background: var(--vp-c-bg-soft);
+}
+
+.dark .plantuml-diagram svg {
+  filter: invert(0.88) hue-rotate(180deg);
+}
+
+/* フォールバック img タグ用 */
 .plantuml-diagram img {
   max-width: 100%;
   height: auto;
-  border-radius: 12px;
-  border: 1px solid var(--vp-c-divider);
-  background: white;
-  padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
 
-.dark .plantuml-diagram img {
-  filter: invert(0.88) hue-rotate(180deg);
-  border-color: var(--vp-c-divider);
-}
-
-/* ===== Blockquotes - Callout Style ===== */
-.vp-doc blockquote {
-  border-radius: 8px;
-  background: var(--vp-c-brand-soft);
-  border-left: 4px solid var(--vp-c-brand-1);
-  padding: 16px 20px;
-  margin: 16px 0;
-}
-
-.vp-doc blockquote p {
+/* ===== 強調テキスト ===== */
+.vp-doc strong {
+  font-weight: 700;
   color: var(--vp-c-text-1);
 }
 
-/* ===== Custom Tip Boxes ===== */
-.vp-doc .custom-block.tip {
-  border-color: var(--vp-c-brand-1);
-  background: var(--vp-c-brand-soft);
+/* ===== 水平線 ===== */
+.vp-doc hr {
+  margin: 32px 0;
+  border: none;
+  border-top: 1px solid var(--vp-c-divider);
 }
 
-/* ===== Smooth Transitions ===== */
-.VPContent {
-  transition: opacity 0.2s ease;
-}
-
-/* ===== Better Spacing for Doc Pages ===== */
-.vp-doc > div > :first-child {
-  margin-top: 0;
-}
-
-/* ===== Responsive ===== */
+/* ===== レスポンシブ ===== */
 @media (max-width: 768px) {
+  .vp-doc {
+    font-size: 14px;
+  }
+
   .vp-doc h1 {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
   }
 
   .vp-doc h2 {
     font-size: 1.2rem;
+  }
+
+  .vp-doc table {
+    font-size: 0.8em;
   }
 }
