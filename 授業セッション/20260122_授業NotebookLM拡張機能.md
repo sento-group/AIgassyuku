@@ -27,7 +27,84 @@ date: 2026-01-22
 | 導入     | 10分 | 現状の不満確認・拡張機能デモ | 「これで解決できる」とわかる                         |
 | 解説     | 20分 | 4つの機能を順番に解説        | 各機能の使いどころが明確になる                       |
 | 実践     | 20分 | 拡張機能インストール＋設定   | 自分のNotebookLMで動作確認できる                     |
-| 振り返り | 10分 | 質疑応答＋次回予告           | 継続活用のイメージができる## 🎬 各フェーズの詳細設計 |
+| 振り返り | 10分 | 質疑応答＋次回予告           | 継続活用のイメージができる |
+
+### 授業フロー図
+
+```plantuml
+@startuml NotebookLM拡張機能授業フロー
+
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam PartitionBorderColor Gray
+skinparam defaultFontName "Noto Sans JP"
+
+title NotebookLM拡張機能セッション - 授業フロー（60分）
+
+start
+
+partition "機能解説（20分）" {
+  :機能1: 全ソース一括同期;
+  note right
+    Googleドライブ連携
+    ワンクリックで全ソース最新化
+    同期漏れゼロ
+  end note
+    
+  :機能3: ウェブクローラー;
+  note right
+    Webサイト自動収集
+    Markdown形式で出力
+    ※詳細は次回TSV回で
+  end note
+  
+  :機能4: 同期スケジューラー;
+  note right
+    1時間/毎日/毎週で自動同期
+    常に最新のデータベース維持
+  end note
+}
+
+partition "実践ワーク（20分）" {
+  :Chrome拡張機能インストール;
+  note right
+    Chromeウェブストアから追加
+    約5分
+  end note
+  
+  :同期スケジューラー設定;
+  note right
+    同期間隔を選択
+    約10分
+  end note
+  
+  :動作確認;
+  note right
+    一括同期テスト
+    パネル折りたたみ確認
+    約5分
+  end note
+}
+
+partition "振り返り（10分）" {
+  :4機能のまとめ;
+  
+  :次回予告;
+  note right
+    TSVファイル出力回で
+    クローラー機能を深掘り
+  end note
+  
+  :質疑応答;
+}
+
+stop
+
+@enduml
+```
+
+### 🎬 各フェーズの詳細設計
 
 ### 1. 導入（10分）
 

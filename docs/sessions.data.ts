@@ -9,6 +9,13 @@ export interface SessionData {
 declare const data: SessionData[]
 export { data }
 
+// YAML date: 2026-01-22 (引用符なし) はDate型に変換されるため正規化が必要
+function normalizeDate(raw: unknown): string {
+  if (!raw) return ''
+  if (raw instanceof Date) return raw.toISOString().split('T')[0]
+  return String(raw)
+}
+
 export default createContentLoader('sessions/**/*.md', {
   transform(rawData): SessionData[] {
     return rawData
@@ -23,9 +30,9 @@ export default createContentLoader('sessions/**/*.md', {
       })
       .map(page => ({
         title: String(page.frontmatter.title || ''),
-        date: String(page.frontmatter.date || ''),
+        date: normalizeDate(page.frontmatter.date),
         url: page.url,
       }))
-      .sort((a, b) => b.date.localeCompare(a.date))
+      .sort((a, b) => a.date.localeCompare(b.date))
   },
 })
