@@ -1,3 +1,7 @@
+---
+title: "Claude MCP連携 外部ツール自動化"
+date: 2026-03-12
+---
 # Claude × MCP連携 — Notion・Googleドライブ・Slackと繋げる
 
 > 60分後には、Claudeから直接Notionを更新したり、Googleドライブのファイルを操作できるようになります。

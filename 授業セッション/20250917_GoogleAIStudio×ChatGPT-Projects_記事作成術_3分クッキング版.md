@@ -1,3 +1,7 @@
+---
+title: "GoogleAIStudio×ChatGPT-Projects 記事作成術 3分クッキング版"
+date: 2025-09-17
+---
 # Google AI Studio × ChatGPT Projectsで作る高速記事制作：60分実践
 
 ## 〜@cooking.mdc準拠：情報収集→構成→執筆→仕上げを一気通貫〜

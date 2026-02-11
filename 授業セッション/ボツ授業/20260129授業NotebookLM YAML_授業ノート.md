@@ -1,3 +1,7 @@
+---
+title: "授業NotebookLM YAML 授業ノート"
+date: 2026-01-29
+---
 ## 🧑‍🍳 NotebookLM × YAML × Google Slides で編集可能なスライドを作る
 
 - **開催日**: 2026-01-29

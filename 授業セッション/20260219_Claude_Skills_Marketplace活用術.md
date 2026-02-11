@@ -1,3 +1,7 @@
+---
+title: "Claude Skills Marketplace活用術"
+date: 2026-02-19
+---
 # Claude Skills Marketplace — AIに「専門スキル」を装備する
 
 > 60分後には、Claudeにプレゼン作成・デザイン・GIF生成などの専門スキルを自在に追加して使えるようになります。

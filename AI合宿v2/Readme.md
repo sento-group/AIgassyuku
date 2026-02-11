@@ -1,3 +1,7 @@
+---
+title: "Readme"
+---
+
 # AI合宿v2 当日進行マニュアル
 
 ## 目次
@@ -255,21 +259,21 @@ end note
 1. ブラウザで https://github.com にアクセス
 2. 画面右上の「**Sign up**」ボタンをクリック
 
-![GitHubトップページ](./image/github-top-signup.png)
+<!-- 画像: GitHubトップページ (github-top-signup.png) -->
 
 #### 3-2. メールアドレスの入力
 
 1. 「Enter your email」にメールアドレスを入力
 2. 「**Continue**」をクリック
 
-![メールアドレス入力](./image/github-email.png)
+<!-- 画像: メールアドレス入力 (github-email.png) -->
 
 #### 3-3. パスワードの設定
 
 1. パスワードを入力（15文字以上、または数字と小文字を含む8文字以上）
 2. 「**Continue**」をクリック
 
-![パスワード設定](./image/github-password.png)
+<!-- 画像: パスワード設定 (github-password.png) -->
 
 #### 3-4. ユーザー名の設定
 
@@ -277,7 +281,7 @@ end note
 2. 使用可能であれば緑のチェックマークが表示される
 3. 「**Continue**」をクリック
 
-![ユーザー名設定](./image/github-username.png)
+<!-- 画像: ユーザー名設定 (github-username.png) -->
 
 #### 3-5. メール設定とロボット認証
 
@@ -285,20 +289,20 @@ end note
 2. ロボットでないことを確認するパズルを解く
 3. 「**Create account**」をクリック
 
-![ロボット認証](./image/github-verify.png)
+<!-- 画像: ロボット認証 (github-verify.png) -->
 
 #### 3-6. メール認証コードの入力
 
 1. 登録したメールアドレスに届いた認証コード（8桁の数字）を確認
 2. GitHub画面に認証コードを入力
 
-![メール認証コード入力](./image/github-email-code.png)
+<!-- 画像: メール認証コード入力 (github-email-code.png) -->
 
 #### 3-7. アカウント作成完了
 
 1. 以下のようなダッシュボード画面が表示されれば完了
 
-![GitHub完了画面](./image/github-welcome.png)
+<!-- 画像: GitHub完了画面 (github-welcome.png) -->
 
 > **📸 スクリーンショット撮影ガイド（運営向け）**
 >
