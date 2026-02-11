@@ -1,19 +1,25 @@
 import { defineConfig } from 'vitepress'
-import plantuml from 'markdown-it-plantuml'
+import { deflateSync } from 'node:zlib'
 import fs from 'fs'
 import path from 'path'
 
-// 授業セッションのファイルからサイドバーを自動生成
+// PlantUML → Kroki.io SVG URL
+function plantumlToKrokiUrl(source: string): string {
+  const data = Buffer.from(source, 'utf8')
+  const compressed = deflateSync(data, { level: 9 })
+  return `https://kroki.io/plantuml/svg/${compressed.toString('base64url')}`
+}
+
+// 授業セッションのサイドバー自動生成
 function getSessionSidebar() {
   const sessionsDir = path.resolve(__dirname, '../sessions')
   if (!fs.existsSync(sessionsDir)) return []
 
   const files = fs.readdirSync(sessionsDir)
-    .filter(f => f.endsWith('.md') && !f.startsWith('.'))
+    .filter(f => f.endsWith('.md') && !f.startsWith('.') && f !== 'index.md')
     .sort()
-    .reverse() // 新しい順
+    .reverse()
 
-  // 日付付きファイルとそれ以外を分離
   const dated: { text: string; link: string; date: string }[] = []
   const other: { text: string; link: string }[] = []
 
@@ -23,16 +29,13 @@ function getSessionSidebar() {
 
     if (dateMatch) {
       const [, y, m, d, title] = dateMatch
-      const displayTitle = title
-        .replace(/_/g, ' ')
-        .replace(/^_/, '')
-        .trim()
+      const displayTitle = title.replace(/_/g, ' ').replace(/^_/, '').trim()
       dated.push({
-        text: `${y}/${m}/${d} ${displayTitle}`,
+        text: `${m}/${d} ${displayTitle}`,
         link: `/sessions/${name}`,
         date: `${y}${m}${d}`,
       })
-    } else if (name !== '2025xxxx_ロープレボット実践セッション') {
+    } else if (!name.includes('ロープレボット')) {
       other.push({
         text: name.replace(/_/g, ' '),
         link: `/sessions/${name}`,
@@ -41,8 +44,6 @@ function getSessionSidebar() {
   }
 
   const items: any[] = []
-
-  // 年ごとにグループ化
   const years = new Map<string, typeof dated>()
   for (const item of dated) {
     const year = item.date.substring(0, 4)
@@ -52,7 +53,7 @@ function getSessionSidebar() {
 
   for (const [year, yearItems] of years) {
     items.push({
-      text: `${year}年`,
+      text: `📅 ${year}年`,
       collapsed: year !== '2026',
       items: yearItems.map(({ text, link }) => ({ text, link })),
     })
@@ -60,7 +61,7 @@ function getSessionSidebar() {
 
   if (other.length > 0) {
     items.push({
-      text: 'その他',
+      text: '📚 リファレンス',
       collapsed: true,
       items: other,
     })
@@ -69,36 +70,30 @@ function getSessionSidebar() {
   return items
 }
 
-// AI合宿v2のサイドバー
-function getAiCampSidebar() {
-  const dir = path.resolve(__dirname, '../ai-camp')
-  if (!fs.existsSync(dir)) return []
-
-  return fs.readdirSync(dir)
-    .filter(f => f.endsWith('.md'))
-    .sort()
-    .map(f => ({
-      text: f.replace('.md', '').replace(/_/g, ' '),
-      link: `/ai-camp/${f.replace('.md', '')}`,
-    }))
-}
-
 export default defineConfig({
-  title: 'AI合宿 講義ライブラリ',
-  description: 'sento.group AI部の授業セッション・講義資料をまとめたサイト',
+  title: 'AIクラブ',
+  description: 'sento.group AI部の授業セッション・講義資料',
   lang: 'ja',
+
+  srcExclude: ['ai-camp/**', 'ideas/**'],
+
   head: [
     ['link', { rel: 'icon', href: '/logo.png' }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
+    ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
+    ['link', {
+      href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap',
+      rel: 'stylesheet',
+    }],
   ],
 
   themeConfig: {
     logo: '/logo.png',
-    siteTitle: 'AI合宿',
+    siteTitle: 'AIクラブ',
 
     nav: [
       { text: 'ホーム', link: '/' },
-      { text: '授業セッション', link: '/sessions/' },
-      { text: 'AI合宿v2', link: '/ai-camp/' },
+      { text: '授業一覧', link: '/sessions/' },
     ],
 
     sidebar: {
@@ -108,26 +103,6 @@ export default defineConfig({
           items: getSessionSidebar(),
         },
       ],
-      '/ai-camp/': [
-        {
-          text: 'AI合宿v2',
-          items: getAiCampSidebar(),
-        },
-      ],
-    },
-
-    search: {
-      provider: 'local',
-      options: {
-        translations: {
-          button: { buttonText: '検索', buttonAriaLabel: '検索' },
-          modal: {
-            noResultsText: '見つかりませんでした',
-            resetButtonTitle: 'リセット',
-            footer: { selectText: '選択', navigateText: '移動', closeText: '閉じる' },
-          },
-        },
-      },
     },
 
     outline: {
@@ -151,18 +126,21 @@ export default defineConfig({
 
   markdown: {
     config: (md) => {
-      // PlantUMLレンダリング（Kroki.io 経由でSVG変換）
-      md.use(plantuml, {
-        openMarker: '@startuml',
-        closeMarker: '@enduml',
-        server: 'https://kroki.io/plantuml/svg',
-      })
+      // PlantUML fenced code blocks → Kroki.io SVG images
+      const defaultFence = md.renderer.rules.fence!.bind(md.renderer.rules)
+      md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+        const token = tokens[idx]
+        if (token.info.trim() === 'plantuml') {
+          const source = token.content.trim()
+          const url = plantumlToKrokiUrl(source)
+          return `<div class="plantuml-diagram"><img src="${url}" alt="PlantUML Diagram" loading="lazy" /></div>\n`
+        }
+        return defaultFence(tokens, idx, options, env, self)
+      }
     },
   },
 
   lastUpdated: true,
-
-  // リポジトリ内の他フォルダ(.cursor, governance等)へのリンクは解決不可のため無視
   ignoreDeadLinks: true,
 
   vite: {
