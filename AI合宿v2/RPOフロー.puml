@@ -1,0 +1,112 @@
+@startuml RPO業務フロー
+
+skinparam backgroundColor #FEFEFE
+skinparam activity {
+    BackgroundColor #E3F2FD
+    BorderColor #1976D2
+    FontColor #333333
+}
+skinparam swimlane {
+    BorderColor #1976D2
+}
+
+title RPO（採用代行）業務フロー
+
+|クライアント|
+start
+:採用ニーズ発生;
+
+|RPO営業|
+:商談・ヒアリング;
+:提案・見積作成;
+
+|クライアント|
+if (契約合意?) then (Yes)
+else (No)
+    stop
+endif
+
+|RPO営業|
+:契約締結;
+:採用要件定義;
+
+|リクルーター|
+:求人票作成;
+
+|クライアント|
+:求人票承認;
+
+|リクルーター|
+fork
+    :求人媒体掲載;
+fork again
+    :スカウト配信;
+fork again
+    :人材紹介会社連携;
+end fork
+
+:候補者エントリー受付;
+
+repeat
+    :書類選考;
+    
+    |クライアント|
+    if (書類通過?) then (Yes)
+        |リクルーター|
+        :面接日程調整;
+        
+        |クライアント|
+        :面接実施;
+        
+        if (面接通過?) then (Yes)
+            if (最終面接?) then (Yes)
+                :内定判断;
+            else (No)
+                :次回面接へ;
+            endif
+        else (No)
+            |リクルーター|
+            :不合格通知;
+        endif
+    else (No)
+        |リクルーター|
+        :不合格通知;
+    endif
+    
+repeat while (採用枠充足?) is (No)
+
+|リクルーター|
+:内定通知・条件交渉;
+
+|候補者|
+if (内定承諾?) then (Yes)
+    |リクルーター|
+    :入社手続きサポート;
+    
+    |候補者|
+    :入社;
+    
+    |リクルーター|
+    :入社報告;
+    
+    |RPO営業|
+    :成果報酬請求;
+else (No)
+    |リクルーター|
+    :辞退理由ヒアリング;
+    :母集団形成へ戻る;
+endif
+
+|リクルーター|
+:月次レポート作成;
+
+|クライアント|
+:レポート確認;
+
+|RPO営業|
+:請求処理;
+:入金確認;
+
+stop
+
+@enduml

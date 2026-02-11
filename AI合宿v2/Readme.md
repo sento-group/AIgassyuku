@@ -326,41 +326,45 @@ GitHubやCursorが何をするものなのか、全体像を把握しましょ�
 !theme plain
 skinparam backgroundColor #FFFFFF
 skinparam defaultFontName "Hiragino Sans"
+skinparam defaultFontSize 18
 skinparam rectangleBorderColor #333366
-skinparam rectangleFontSize 14
+skinparam rectangleFontSize 22
+skinparam arrowFontSize 18
+skinparam noteFontSize 16
+skinparam titleFontSize 28
 
 title GitHubとみんなのPCの関係
 
-rectangle "**AI Gassyuku\nGitHub**\n（クラウド上の共有スペース）" as github #FF4444;text:white
+rectangle "<size:24>**AI Gassyuku\nGitHub**</size>\n\n<size:16>（クラウド上の共有スペース）</size>" as github #FF4444;text:white
 
-rectangle "和島のPC" as wajima #9966CC;text:white
-rectangle "橘田さんのPC" as kitsuda #9966CC;text:white
-rectangle "AさんのPC" as personA #9966CC;text:white
-rectangle "BさんのPC" as personB #9966CC;text:white
+rectangle "<size:20>和島のPC</size>" as wajima #9966CC;text:white
+rectangle "<size:20>橘田さんのPC</size>" as kitsuda #9966CC;text:white
+rectangle "<size:20>AさんのPC</size>" as personA #9966CC;text:white
+rectangle "<size:20>BさんのPC</size>" as personB #9966CC;text:white
 
-github -down--> wajima : **Pull（取得する）**\nGitHubから最新の\nファイルをダウンロード
-wajima -up--> github : **Push（あっぷする）**\nPCで作業した\n結果をアップロード
+github -down--> wajima : <size:16>**Pull（取得する）**\nGitHubから最新の\nファイルをダウンロード</size>
+wajima -up--> github : <size:16>**Push（あっぷする）**\nPCで作業した\n結果をアップロード</size>
 
 github -down--> kitsuda
-kitsuda -up--> github : **Push**
+kitsuda -up--> github : <size:16>**Push**</size>
 
 github -down--> personA
-personA -up--> github : **Push**
+personA -up--> github : <size:16>**Push**</size>
 
 github -down--> personB
-personB -up--> github : **Push**
+personB -up--> github : <size:16>**Push**</size>
 
 note bottom of github
-  **GitHubとは？**
+  <size:16>**GitHubとは？**
   みんなのファイルを1か所にまとめて管理する
   クラウドサービス。
-  誰が・いつ・何を変えたか全部記録される。
+  誰が・いつ・何を変えたか全部記録される。</size>
 end note
 
 note bottom of wajima
-  各自のPCで **Cursor（AIエディタ）** を使って
+  <size:16>各自のPCで **Cursor（AIエディタ）** を使って
   ファイルを編集し、完成したら GitHub に Push。
-  他の人の変更が欲しい時は Pull する。
+  他の人の変更が欲しい時は Pull する。</size>
 end note
 
 @enduml
