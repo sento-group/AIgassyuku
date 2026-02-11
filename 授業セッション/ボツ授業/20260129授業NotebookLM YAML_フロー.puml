@@ -1,0 +1,146 @@
+@startuml
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam PartitionBorderColor Gray
+skinparam defaultFontName "Noto Sans JP"
+
+title NotebookLM × YAML × Google Slides\n編集可能なスライド作成フロー
+
+start
+
+partition "Phase 0: 前提確認" {
+  :スコープ確認;
+  note right
+    Why: NotebookLMのスライドは編集できない
+    課題: 微修正・テンプレート適用ができない
+    成果物: 編集可能なGoogle Slides
+  end note
+  
+  :環境確認;
+  note right
+    Check: Google Workspace契約済み
+    Check: NotebookLM/Gemini利用可能
+    Check: 社内テンプレート有無
+  end note
+}
+
+partition "Phase 1: NotebookLMでスライド生成" {
+  :雑メモやドキュメントを準備;
+  note right
+    Why: 構成と初稿の生成に全振り
+    入力: 一文でもOK（例：「カレーはシチューより美味しい」）
+  end note
+  
+  :NotebookLMにソース登録;
+  
+  :スライド生成プロンプト設定;
+  note right
+    プロンプト:
+    - 背景は白でお願いします
+    - ピクトグラムを中心とした、シンプルな図解をメインにしてください
+    モード: プレゼンターのスライド
+  end note
+  
+  :スライドPDF生成;
+  
+  :PDFダウンロード;
+}
+
+partition "Phase 2: GeminiでYAML設計図に変換" {
+  :GeminiにPDFをアップロード;
+  
+  :YAML生成プロンプト実行;
+  note right
+    最重要要件:
+    1. コンテナ禁止（テキストを囲む枠、背景の白いボックスなど）
+    2. テキストの完全性（すべての文字情報を漏らさず格納）
+    
+    その他要件:
+    - 視覚・空間情報の言語化
+    - 図解の構造化（nodes/edges）
+    - 意図の解釈（キーメッセージ）
+  end note
+  
+  :YAML設計図生成;
+  
+  if (YAMLが正しく生成されたか？) then (No)
+    :改善プロンプト実行;
+    note right
+      改善観点:
+      - YAMLの構造が正しいか確認
+      - コンテナ要素が含まれていないか確認
+      - テキスト情報が漏れていないか確認
+    end note
+    repeat
+      :YAML再生成;
+    repeat while (YAMLが正しいか？) is (No)
+    ->Yes;
+  endif
+}
+
+partition "Phase 3: canvasツールでGoogle Slides生成" {
+  :Geminiのcanvasツールを選択;
+  
+  :Google Slides生成プロンプト実行;
+  note right
+    プロンプト:
+    以下の yaml に従って、google slide を作成してください。
+    （生成されたYAMLをコピペ）
+  end note
+  
+  :Google Slides生成;
+  
+  :スライドをエクスポート;
+}
+
+partition "Phase 4: Google Slidesでブラッシュアップ" {
+  :社内テンプレート適用;
+  note right
+    方法:
+    1. NotebookLMスライドからスクショ切り貼り
+    2. Nano Banana Proでブラッシュアップ
+    3. 手動でテンプレート適用
+  end note
+  
+  :微修正・調整;
+  note right
+    対応内容:
+    - フォント・余白の調整
+    - ロゴ・注釈・ページ番号の追加
+    - 文言の微調整
+  end note
+  
+  :完成版スライド確認;
+}
+
+partition "Phase 5: 検証・再判断" {
+  if (スライドが完成したか？) then (No)
+    :問題点を特定;
+    note right
+      制約タイプ: [実行]
+      状態: 未解消
+      次のアクション: 該当フェーズに戻る
+    end note
+    
+    if (NotebookLM生成に問題？) then (Yes)
+      ->Phase 1;
+    elseif (YAML変換に問題？) then (Yes)
+      ->Phase 2;
+    elseif (Google Slides生成に問題？) then (Yes)
+      ->Phase 3;
+    else (その他)
+      ->Phase 4;
+    endif
+  else (Yes)
+    :完成;
+    note right
+      成果物: 編集可能なGoogle Slides
+      次のアクション: 実務で活用
+    end note
+  endif
+}
+
+stop
+
+@enduml
